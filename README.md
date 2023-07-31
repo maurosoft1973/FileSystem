@@ -9,6 +9,7 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=coverage)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem)
+[![Codecov](https://codecov.io/gh/maurosoft1973/FileSystem/branch/master/graph/badge.svg?token=g5nMtgLUnM)](https://codecov.io/gh/maurosoft1973/FileSystem)
 
 ## Introduction
 Maurosoft FileSystem is a file system abstraction supporting multiple adapters.

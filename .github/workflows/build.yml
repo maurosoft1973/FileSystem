@@ -56,8 +56,7 @@ jobs:
       run: dotnet build --no-restore /p:ContinuousIntegrationBuild=true
 
     - name: Test
-      run: |
-          dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
