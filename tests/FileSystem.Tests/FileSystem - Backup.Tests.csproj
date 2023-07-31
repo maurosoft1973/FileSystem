@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+        <PackageReference Include="Moq" Version="4.18.4" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.2.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.AmazonS3\FileSystem.Adapters.AmazonS3.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.AzureBlobStorage\FileSystem.Adapters.AzureBlobStorage.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.AzureFileStorage\FileSystem.Adapters.AzureFileStorage.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Dropbox\FileSystem.Adapters.Dropbox.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Memory\FileSystem.Adapters.Memory.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.MicrosoftOneDrive\FileSystem.Adapters.MicrosoftOneDrive.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Sftp\FileSystem.Adapters.Sftp.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem\FileSystem.csproj" />
+        <ProjectReference Include="..\src\FileSystem\FileSystem.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.AmazonS3\FileSystem.Adapters.AmazonS3.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.AzureBlobStorage\FileSystem.Adapters.AzureBlobStorage.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.AzureFileStorage\FileSystem.Adapters.AzureFileStorage.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.Dropbox\FileSystem.Adapters.Dropbox.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.Memory\FileSystem.Adapters.Memory.csproj" />
+		<ProjectReference Include="..\src\FileSystem.Adapters.MicrosoftOneDrive\FileSystem.Adapters.MicrosoftOneDrive.csproj" />
+        <ProjectReference Include="..\src\FileSystem.Adapters.Sftp\FileSystem.Adapters.Sftp.csproj" />
+    </ItemGroup>
+
+</Project>

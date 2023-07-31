@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>Maurosoft.FileSystem.Adapters.Memory</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyName>Maurosoft.FileSystem.Adapters.Memory</AssemblyName>
+        <PackageId>Maurosoft.FileSystem.Adapters.Memory</PackageId>
+        <Title>Maurosoft FileSystem Memory adapter</Title>
+        <Description>The Maurosoft FileSystem Memory adapter.</Description>
+        <PackageTags>Maurosoft;file-system;memory</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FileSystem\FileSystem.csproj" />
+    </ItemGroup>
+
+</Project>

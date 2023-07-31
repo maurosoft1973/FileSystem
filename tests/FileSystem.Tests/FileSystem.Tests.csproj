@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net7.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <IsPackable>false</IsPackable>
+        <!-- Project is not a test project -->
+        <SonarQubeTestProject>true</SonarQubeTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="dotenv.net" Version="3.1.2" />
+        <PackageReference Include="FluentFTP" Version="47.1.0" />
+        <PackageReference Include="Maurosoft.SSH.NET" Version="2023.0.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+        <PackageReference Include="Moq" Version="4.18.4" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Testcontainers" Version="3.3.0" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.analyzers" Version="1.1.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions" Version="6.11.0" />
+        <PackageReference Include="JunitXml.TestLogger" Version="3.0.134" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Ftp\FileSystem.Adapters.Ftp.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Memory\FileSystem.Adapters.Memory.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem.Adapters.Sftp\FileSystem.Adapters.Sftp.csproj" />
+        <ProjectReference Include="..\..\src\FileSystem\FileSystem.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update=".env">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

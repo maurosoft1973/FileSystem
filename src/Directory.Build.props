@@ -1,0 +1,23 @@
+<Project>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <LangVersion>8.0</LangVersion>
+        <NoWarn>NU1701</NoWarn>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageOutputPath>../NuGet</PackageOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Company>Mauro Cardillo</Company>
+        <Authors>Mauro Cardillo</Authors>
+        <Copyright>SharpGrip</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/maurosoft1973/FileSystem</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/maurosoft1973/FileSystem</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+</Project>

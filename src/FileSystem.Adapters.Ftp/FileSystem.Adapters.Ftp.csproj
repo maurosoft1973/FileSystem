@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>Maurosoft.FileSystem.Adapters.Ftp</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyName>Maurosoft.FileSystem.Adapters.Ftp</AssemblyName>
+        <PackageId>Maurosoft.FileSystem.Adapters.Ftp</PackageId>
+        <Title>Maurosoft FileSystem Ftp adapter</Title>
+        <Description>The Maurosoft FileSystem Ftp adapter.</Description>
+        <PackageTags>Maurosoft;file-system;ftp</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentFTP" Version="47.1.0" />
+      <PackageReference Include="Maurosoft.SSH.NET" Version="2023.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FileSystem\FileSystem.csproj" />
+    </ItemGroup>
+
+</Project>
