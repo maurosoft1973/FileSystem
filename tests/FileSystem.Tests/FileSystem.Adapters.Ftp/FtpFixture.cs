@@ -59,7 +59,8 @@ public class FtpFixture : IAsyncLifetime
                 ["TIMEZONE"] = "Europe/Rome"
             })
             .WithPortBinding(20, assignRandomHostPort: true)
-            .WithPortBinding(21, assignRandomHostPort: true);
+            .WithPortBinding(21, assignRandomHostPort: true)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(21));
 
         for (var port = PassivePortStart; port < passivePortEnd; port++)
             containerBuilder = containerBuilder.WithPortBinding(port);

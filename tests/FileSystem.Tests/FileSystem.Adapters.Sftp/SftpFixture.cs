@@ -51,7 +51,8 @@ public class SftpFixture : IAsyncLifetime
                 ["SSH_USER_PASSWORD"] = Password,
                 ["TIMEZONE"] = "Europe/Rome"
             })
-            .WithPortBinding(22, assignRandomHostPort: true);
+            .WithPortBinding(22, assignRandomHostPort: true)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(22));
 
         SftpContainer = containerBuilder.Build();
     }
