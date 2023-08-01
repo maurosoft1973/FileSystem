@@ -15,6 +15,16 @@ on:
       - 'develop'
 
 jobs:
+  use-container:
+    runs-on: ubuntu-latest
+    container: maurosoft1973/alpine-net-sonarqube-scanner
+    steps:
+      - name: Run in container
+        run: | # Example
+          env
+          ls -la
+          /scripts/run-alpine-sonarqube-scanner.sh
+
   quality:
     name: Sonarqube Analysis
     runs-on: ubuntu-latest
@@ -31,12 +41,10 @@ jobs:
            image: maurosoft1973/alpine-net-sonarqube-scanner
            options: -v ${{ github.workspace }}:/source
            run: |
-             ls -la /scripts
+             env
              /scripts/run-alpine-sonarqube-scanner.sh
-             cd /source
-             ls -la
-             dotnet sonarscanner begin /o:"${{ env.SONAR_ORGANIZATION }}" /k:"${{ env.SONAR_PROJECT }}" /d:sonar.login="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-             dotnet build --no-incremental
-             dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
-             dotnet sonarscanner end /d:sonar.login="${{ env.SONAR_TOKEN }}"
+             /root/.dotnet/dotnet sonarscanner begin /o:"${{ env.SONAR_ORGANIZATION }}" /k:"${{ env.SONAR_PROJECT }}" /d:sonar.login="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+             /root/.dotnet/dotnet build --no-incremental
+             /root/.dotnet/dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
+             /root/.dotnet/dotnet sonarscanner end /d:sonar.login="${{ env.SONAR_TOKEN }}"
   
