@@ -41,10 +41,10 @@ jobs:
            image: maurosoft1973/alpine-net-sonarqube-scanner
            options: -v ${{ github.workspace }}:/source
            run: |
-             env
              /scripts/run-alpine-sonarqube-scanner.sh
-             /root/.dotnet/dotnet sonarscanner begin /o:"${{ env.SONAR_ORGANIZATION }}" /k:"${{ env.SONAR_PROJECT }}" /d:sonar.login="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-             /root/.dotnet/dotnet build --no-incremental
-             /root/.dotnet/dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
-             /root/.dotnet/dotnet sonarscanner end /d:sonar.login="${{ env.SONAR_TOKEN }}"
+             export DOTNET_ROOT=/root/.dotnet
+             export PATH=$PATH:$DOTNET_ROOT:/scripts
+             env
+             cd /source
+             dotnet --info
   
