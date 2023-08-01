@@ -51,8 +51,7 @@ namespace FileSystem.Tests.FileSystem.Adapters.Sftp
                     ["SSH_USER_PASSWORD"] = Password,
                     ["TIMEZONE"] = "Europe/Rome"
                 })
-                .WithPortBinding(22, assignRandomHostPort: true)
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(22));
+                .WithPortBinding(22, assignRandomHostPort: true);
 
             SftpContainer = containerBuilder.Build();
         }

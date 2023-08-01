@@ -61,8 +61,7 @@ namespace FileSystem.Tests.FileSystem.Adapters.Ftp
                     ["TIMEZONE"] = "Europe/Rome"
                 })
                 .WithPortBinding(20, assignRandomHostPort: true)
-                .WithPortBinding(21, assignRandomHostPort: true)
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(21));
+                .WithPortBinding(21, assignRandomHostPort: true);
 
             for (var port = PassivePortStart; port < passivePortEnd; port++)
                 containerBuilder = containerBuilder.WithPortBinding(port);
