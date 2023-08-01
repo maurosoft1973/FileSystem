@@ -31,6 +31,8 @@ jobs:
            image: maurosoft1973/alpine-net-sonarqube-scanner
            options: -v ${{ github.workspace }}:/source
            run: |
+             ls -la /scripts
+             /scripts/run-alpine-sonarqube-scanner.sh
              cd /source
              ls -la
              dotnet sonarscanner begin /o:"${{ env.SONAR_ORGANIZATION }}" /k:"${{ env.SONAR_PROJECT }}" /d:sonar.login="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
