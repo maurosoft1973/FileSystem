@@ -16,15 +16,15 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
     public override string Prefix => "ftpadapter1";
     public override string RootPath => "/";
 
-    private FtpFixture _fixture { get; }
-    private FtpClient _ftpClient;
+    private FtpFixture Fixture { get; }
+    private FtpClient ftpClient;
 
     private readonly ITestOutputHelper _outputHelper;
 
     public FtpAdapterIntegrationTest(ITestOutputHelper outputHelper, FtpFixture ftpFixture)
     {
         _outputHelper = outputHelper;
-        _fixture = ftpFixture;
+        Fixture = ftpFixture;
     }
 
     public Task DisposeAsync() => Task.CompletedTask;
@@ -37,9 +37,9 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
                      .WriteTo.InMemory()
                      .CreateLogger();
 
-        _ftpClient = new FtpClient(_fixture.GetHostname(), _fixture.UserName, _fixture.Password, _fixture.GetPort());
-        _ftpClient.Connect();
-        _adapter = new FtpAdapter(Prefix, RootPath, _ftpClient, Logger);
+        ftpClient = new FtpClient(Fixture.GetHostname(), Fixture.UserName, Fixture.Password, Fixture.GetPort());
+        ftpClient.Connect();
+        _adapter = new FtpAdapter(Prefix, RootPath, ftpClient, Logger);
         return Task.CompletedTask;
     }
 

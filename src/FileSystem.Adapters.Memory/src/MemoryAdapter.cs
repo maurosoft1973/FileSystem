@@ -40,7 +40,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
                 if (!found)
                     throw new FileNotFoundException(path, Prefix);
 
-                _files.TryGetValue(path, out MemoryFile memoryFile);
+                _files.TryGetValue(path, out var memoryFile);
 
                 return ModelFactory.CreateFile(memoryFile);
             }
@@ -65,7 +65,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
                 if (!found)
                     throw new DirectoryNotFoundException(path, Prefix);
 
-                _directories.TryGetValue(path, out MemoryDirectory memoryDirectory);
+                _directories.TryGetValue(path, out var memoryDirectory);
 
                 return ModelFactory.CreateDirectory(memoryDirectory);
             }
@@ -87,7 +87,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
             if (!found)
                 throw new DirectoryNotFoundException(path, Prefix);
 
-            _directories.TryGetValue(path, out MemoryDirectory memoryDirectory);
+            _directories.TryGetValue(path, out var memoryDirectory);
 
             try
             {
@@ -107,7 +107,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
             if (!found)
                 throw new DirectoryNotFoundException(path, Prefix);
 
-            _directories.TryGetValue(path, out MemoryDirectory memoryDirectory);
+            _directories.TryGetValue(path, out var memoryDirectory);
 
             try
             {
@@ -150,9 +150,9 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
             await GetFileAsync(path, cancellationToken);
 
-            MemoryFile memoryFile = new MemoryFile();
+            var memoryFile = new MemoryFile();
 
-            await Task.Run(() => _files.TryGetValue(path, out MemoryFile memoryFile));
+            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
 
             return memoryFile.Content;
         }
@@ -161,9 +161,9 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
             await GetFileAsync(path, cancellationToken);
 
-            MemoryFile memoryFile = new MemoryFile();
+            var memoryFile = new MemoryFile();
 
-            await Task.Run(() => _files.TryGetValue(path, out MemoryFile memoryFile));
+            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
 
             return System.Text.Encoding.UTF8.GetString(memoryFile.Content);
         }
@@ -173,7 +173,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
             if (!overwrite && await FileExistsAsync(path, cancellationToken))
                 throw new FileExistsException(PrependRootPath(path), Prefix);
 
-            var found = _files.TryGetValue(PrependRootPath(path), out MemoryFile memoryFile);
+            var found = _files.TryGetValue(PrependRootPath(path), out var memoryFile);
 
             memoryFile ??= new MemoryFile
             {
@@ -194,9 +194,9 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
             await GetFileAsync(path, cancellationToken);
 
-            MemoryFile memoryFile = new MemoryFile();
+            var memoryFile = new MemoryFile();
 
-            await Task.Run(() => _files.TryGetValue(path, out MemoryFile memoryFile));
+            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
 
             memoryFile.Content = memoryFile.Content.Concat(contents).ToArray();
         }

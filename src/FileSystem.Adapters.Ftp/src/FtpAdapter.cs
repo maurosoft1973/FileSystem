@@ -180,7 +180,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
                 using var fileStream = client.OpenRead(PrependRootPath(path));
                 var fileContents = new byte[fileStream.Length];
 
-                var _ = await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
+                await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
 
                 return fileContents;
             }

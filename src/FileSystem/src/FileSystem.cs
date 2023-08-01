@@ -37,6 +37,13 @@ namespace Maurosoft.FileSystem
         /// </summary>
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
             foreach (var adapter in Adapters)
             {
                 adapter.Dispose();
@@ -634,35 +641,6 @@ namespace Maurosoft.FileSystem
         }
 
         /// <summary>
-        /// Writes byte array contents to a file at the provided path.
-        /// </summary>
-        /// <param name="path">The path (including prefix) where to write the byte array contents to.</param>
-        /// <param name="contents">The file byte array contents.</param>
-        /// <param name="overwrite">If a file at the destination path exists overwrite it.</param>
-        /// <param name="cancellationToken">Optional <see cref="CancellationToken"/> to propagate notifications that the operation should be cancelled.</param>
-        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
-        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
-        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
-        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
-        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
-        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public async Task WriteFileAsync(
-            string path,
-            byte[] contents,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default
-        )
-        {
-            var prefix = GetPrefix(path);
-            path = GetPath(path);
-            var adapter = GetAdapter(prefix);
-            adapter.Connect();
-
-            await adapter.WriteFileAsync(path, contents, overwrite, cancellationToken);
-        }
-
-        /// <summary>
         /// Writes string contents to a file at the provided path.
         /// </summary>
         /// <param name="path">The path (including prefix) where to write the string contents to.</param>
@@ -681,6 +659,30 @@ namespace Maurosoft.FileSystem
         }
 
         /// <summary>
+        /// Writes byte array contents to a file at the provided path.
+        /// </summary>
+        /// <param name="path">The path (including prefix) where to write the byte array contents to.</param>
+        /// <param name="contents">The file byte array contents.</param>
+        /// <param name="overwrite">If a file at the destination path exists overwrite it.</param>
+        /// <param name="cancellationToken">Optional <see cref="CancellationToken"/> to propagate notifications that the operation should be cancelled.</param>
+        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
+        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
+        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
+        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
+        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
+        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
+        /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
+        public async Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default)
+        {
+            var prefix = GetPrefix(path);
+            path = GetPath(path);
+            var adapter = GetAdapter(prefix);
+            adapter.Connect();
+
+            await adapter.WriteFileAsync(path, contents, overwrite, cancellationToken);
+        }
+
+        /// <summary>
         /// Writes string contents to a file at the provided path.
         /// </summary>
         /// <param name="path">The path (including prefix) where to write the string contents to.</param>
@@ -694,12 +696,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public async Task WriteFileAsync(
-            string path,
-            string contents,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default
-        )
+        public async Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default)
         {
             var prefix = GetPrefix(path);
             path = GetPath(path);
@@ -727,6 +724,23 @@ namespace Maurosoft.FileSystem
         }
 
         /// <summary>
+        /// Writes string contents to a file at the provided path.
+        /// </summary>
+        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
+        /// <param name="contents">The file string contents.</param>
+        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
+        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
+        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
+        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
+        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
+        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
+        public void AppendFile(string path, string contents)
+        {
+            AppendFileAsync(path, contents).Wait();
+        }
+
+        /// <summary>
         /// Writes byte array contents to a file at the provided path.
         /// </summary>
         /// <param name="path">The path (including prefix) where to write the byte array contents to.</param>
@@ -747,23 +761,6 @@ namespace Maurosoft.FileSystem
             adapter.Connect();
 
             await adapter.AppendFileAsync(path, contents, cancellationToken);
-        }
-
-        /// <summary>
-        /// Writes string contents to a file at the provided path.
-        /// </summary>
-        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
-        /// <param name="contents">The file string contents.</param>
-        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
-        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
-        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
-        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
-        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
-        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public void AppendFile(string path, string contents)
-        {
-            AppendFileAsync(path, contents).Wait();
         }
 
         /// <summary>
@@ -821,7 +818,7 @@ namespace Maurosoft.FileSystem
                 throw new PrefixNotFoundInPathException(path);
             }
 
-            return path.Split(new[] {"://"}, StringSplitOptions.None);
+            return path.Split(new[] { "://" }, StringSplitOptions.None);
         }
     }
 }

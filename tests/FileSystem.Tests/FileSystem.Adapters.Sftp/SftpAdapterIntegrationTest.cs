@@ -18,11 +18,11 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
     private SftpFixture Fixture { get; }
     private SftpClient sftpClient;
 
-    private readonly ITestOutputHelper _outputHelper;
+    private readonly ITestOutputHelper outputHelper;
 
     public SftpAdapterIntegrationTest(ITestOutputHelper outputHelper, SftpFixture sftpFixture)
     {
-        _outputHelper = outputHelper;
+        this.outputHelper = outputHelper;
         Fixture = sftpFixture;
     }
 

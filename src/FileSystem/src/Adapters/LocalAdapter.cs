@@ -35,9 +35,7 @@ namespace Maurosoft.FileSystem.Adapters
                 var file = await Task.Run(() => new FileInfo(path), cancellationToken);
 
                 if (!file.Exists)
-                {
                     throw new FileNotFoundException(path, Prefix);
-                }
 
                 return new FileModel(file);
             }
@@ -60,9 +58,7 @@ namespace Maurosoft.FileSystem.Adapters
                 var directory = await Task.Run(() => new DirectoryInfo(path), cancellationToken);
 
                 if (!directory.Exists)
-                {
                     throw new DirectoryNotFoundException(path, Prefix);
-                }
 
                 return new DirectoryModel(directory);
             }
@@ -82,9 +78,7 @@ namespace Maurosoft.FileSystem.Adapters
             var directory = await Task.Run(() => new DirectoryInfo(path), cancellationToken);
 
             if (!directory.Exists)
-            {
                 throw new DirectoryNotFoundException(path, Prefix);
-            }
 
             try
             {
@@ -96,18 +90,13 @@ namespace Maurosoft.FileSystem.Adapters
             }
         }
 
-        public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(
-            string path = "",
-            CancellationToken cancellationToken = default
-        )
+        public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             path = PrependRootPath(path);
             var directory = await Task.Run(() => new DirectoryInfo(path), cancellationToken);
 
             if (!directory.Exists)
-            {
                 throw new DirectoryNotFoundException(path, Prefix);
-            }
 
             try
             {
@@ -125,9 +114,7 @@ namespace Maurosoft.FileSystem.Adapters
         public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
         {
             if (await DirectoryExistsAsync(path, cancellationToken))
-            {
                 throw new DirectoryExistsException(PrependRootPath(path), Prefix);
-            }
 
             try
             {
@@ -158,7 +145,7 @@ namespace Maurosoft.FileSystem.Adapters
             using var fileStream = new FileStream(PrependRootPath(path), FileMode.Open);
             var fileContents = new byte[fileStream.Length];
 
-            var _ = await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
+            await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
 
             return fileContents;
         }
@@ -171,17 +158,10 @@ namespace Maurosoft.FileSystem.Adapters
             return await streamReader.ReadToEndAsync();
         }
 
-        public override async Task WriteFileAsync(
-            string path,
-            byte[] contents,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default
-        )
+        public override async Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default)
         {
             if (!overwrite && await FileExistsAsync(path, cancellationToken))
-            {
                 throw new FileExistsException(PrependRootPath(path), Prefix);
-            }
 
             using var fileStream = new FileStream(PrependRootPath(path), FileMode.Create);
 

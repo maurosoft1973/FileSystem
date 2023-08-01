@@ -62,7 +62,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
 
                     return directory;
@@ -100,7 +100,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
 
                     return directory;
@@ -139,7 +139,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
 
                     return files;
@@ -171,7 +171,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
 
                     return directories;
@@ -202,7 +202,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
                 });
 
@@ -228,7 +228,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -254,7 +254,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -275,7 +275,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                 using var fileStream = client.OpenRead(PathSftp(PrependRootPath(path)));
                 var fileContents = new byte[fileStream.Length];
 
-                var _ = await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
+                await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
 
                 return fileContents;
             }
@@ -316,7 +316,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -344,7 +344,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.Message);
+                        Logger?.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 

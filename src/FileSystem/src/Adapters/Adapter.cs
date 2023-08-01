@@ -16,7 +16,7 @@ namespace Maurosoft.FileSystem.Adapters
     {
         public string Prefix { get; }
         public string RootPath { get; }
-        public ILogger Logger { get; protected set; }
+        public ILogger? Logger { get; protected set; }
 
         protected Adapter(string prefix, string rootPath)
         {

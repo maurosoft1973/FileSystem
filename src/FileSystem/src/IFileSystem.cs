@@ -365,12 +365,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public Task CopyFileAsync(
-            string sourcePath,
-            string destinationPath,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default
-        );
+        public Task CopyFileAsync(string sourcePath, string destinationPath, bool overwrite = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Moves a file from a source path to a destination path.
@@ -403,12 +398,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public Task MoveFileAsync(
-            string sourcePath,
-            string destinationPath,
-            bool overwrite = false,
-            CancellationToken cancellationToken = default
-        );
+        public Task MoveFileAsync(string sourcePath, string destinationPath, bool overwrite = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Writes byte array contents to a file at the provided path.
@@ -426,6 +416,21 @@ namespace Maurosoft.FileSystem
         public void WriteFile(string path, byte[] contents, bool overwrite = false);
 
         /// <summary>
+        /// Writes string contents to a file at the provided path.
+        /// </summary>
+        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
+        /// <param name="contents">The file string contents.</param>
+        /// <param name="overwrite">If a file at the destination path exists overwrite it.</param>
+        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
+        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
+        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
+        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
+        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
+        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
+        /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
+        public void WriteFile(string path, string contents, bool overwrite = false);
+
+        /// <summary>
         /// Writes byte array contents to a file at the provided path.
         /// </summary>
         /// <param name="path">The path (including prefix) where to write the byte array contents to.</param>
@@ -440,21 +445,6 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
         public Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Writes string contents to a file at the provided path.
-        /// </summary>
-        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
-        /// <param name="contents">The file string contents.</param>
-        /// <param name="overwrite">If a file at the destination path exists overwrite it.</param>
-        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
-        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
-        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
-        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
-        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
-        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public void WriteFile(string path, string contents, bool overwrite = false);
 
         /// <summary>
         /// Writes string contents to a file at the provided path.
@@ -487,6 +477,20 @@ namespace Maurosoft.FileSystem
         public void AppendFile(string path, byte[] contents);
 
         /// <summary>
+        /// Writes string contents to a file at the provided path.
+        /// </summary>
+        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
+        /// <param name="contents">The file string contents.</param>
+        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
+        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
+        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
+        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
+        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
+        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
+        public void AppendFile(string path, string contents);
+
+        /// <summary>
         /// Writes byte array contents to a file at the provided path.
         /// </summary>
         /// <param name="path">The path (including prefix) where to write the byte array contents to.</param>
@@ -500,20 +504,6 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
         public Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Writes string contents to a file at the provided path.
-        /// </summary>
-        /// <param name="path">The path (including prefix) where to write the string contents to.</param>
-        /// <param name="contents">The file string contents.</param>
-        /// <exception cref="ConnectionException">Thrown when an exception occurs during the adapter's connection process. Contains an inner exception with more details.</exception>
-        /// <exception cref="AdapterRuntimeException">Thrown when an exception occurs during the adapter's runtime. Contains an inner exception with more details.</exception>
-        /// <exception cref="NoAdaptersRegisteredException">Thrown when no adapters are registered with the file system.</exception>
-        /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
-        /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
-        /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public void AppendFile(string path, string contents);
 
         /// <summary>
         /// Writes string contents to a file at the provided path.
