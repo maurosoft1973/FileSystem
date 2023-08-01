@@ -1,4 +1,3 @@
-using Microsoft.OpenApi.Models;
 using MinimalHelpers.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +10,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddMissingSchemas();
-
-    // Enable Swagger integration for custom parameters.
 });
 
 var app = builder.Build();
@@ -33,10 +30,3 @@ app.MapGet("/api/sample", () =>
 ;
 
 app.Run();
-
-public enum Environment
-{
-    Development,
-    Staging,
-    Production
-}

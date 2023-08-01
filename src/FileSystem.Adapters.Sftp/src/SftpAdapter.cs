@@ -51,7 +51,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task<ISftpFile?> task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     ISftpFile? directory = null;
                     try
@@ -62,6 +62,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
 
                     }
+
                     return directory;
                 });
 
@@ -88,7 +89,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task<ISftpFile?> task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     ISftpFile? directory = null;
                     try
@@ -99,6 +100,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
 
                     }
+
                     return directory;
                 });
 
@@ -126,9 +128,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task<IEnumerable<IFile>> task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
-                    IEnumerable<IFile> files = Enumerable.Empty<IFile>();
+                    var files = Enumerable.Empty<IFile>();
                     try
                     {
                         files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
@@ -137,6 +139,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
 
                     }
+
                     return files;
                 });
 
@@ -157,9 +160,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task<IEnumerable<IDirectory>> task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
-                    IEnumerable<IDirectory> directories = Enumerable.Empty<IDirectory>();
+                    var directories = Enumerable.Empty<IDirectory>();
                     try
                     {
                         directories = client.ListDirectory(path).Where(item => item.IsDirectory).Select(ModelFactory.CreateDirectory).ToList();
@@ -168,6 +171,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
 
                     }
+
                     return directories;
                 });
 
@@ -188,7 +192,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -214,7 +218,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -240,7 +244,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -302,7 +306,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
-                Task task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -330,7 +334,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var stringContents = Encoding.UTF8.GetString(contents, 0, contents.Length);
 
-                Task task = Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {

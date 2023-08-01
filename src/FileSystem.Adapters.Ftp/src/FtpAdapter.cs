@@ -6,14 +6,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Renci.SshNet;
 using Renci.SshNet.Common;
 using Maurosoft.FileSystem.Exceptions;
 using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 using FluentFTP;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Maurosoft.FileSystem.Adapters.Ftp
 {
