@@ -13,6 +13,7 @@ using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 using Renci.SshNet.Sftp;
+using Serilog;
 
 namespace Maurosoft.FileSystem.Adapters.Sftp
 {
@@ -20,9 +21,10 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
     {
         private readonly SftpClient client;
 
-        public SftpAdapter(string prefix, string rootPath, SftpClient client) : base(prefix, rootPath)
+        public SftpAdapter(string prefix, string rootPath, SftpClient client, ILogger logger) : base(prefix, rootPath)
         {
             this.client = client;
+            this.Logger = logger;
         }
 
         public override void Dispose()
@@ -58,9 +60,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         directory = client.Get(path);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
 
                     return directory;
@@ -96,9 +98,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         directory = client.Get(path);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
 
                     return directory;
@@ -135,9 +137,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
 
                     return files;
@@ -167,9 +169,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         directories = client.ListDirectory(path).Where(item => item.IsDirectory).Select(ModelFactory.CreateDirectory).ToList();
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
 
                     return directories;
@@ -198,9 +200,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         client.CreateDirectory(PathSftp(PrependRootPath(path)));
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
                 });
 
@@ -224,9 +226,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         client.DeleteFile(PathSftp(PrependRootPath(path)));
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -250,9 +252,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         client.DeleteDirectory(PathSftp(PrependRootPath(path)));
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -312,9 +314,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         client.WriteAllBytes(PathSftp(PrependRootPath(path)), contents);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 
@@ -340,9 +342,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     {
                         client.AppendAllText(PathSftp(PrependRootPath(path)), stringContents);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Logger.Error(ex, ex.Message);
                     }
                 }, cancellationToken);
 

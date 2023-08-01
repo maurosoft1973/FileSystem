@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Maurosoft.FileSystem.Models;
+using Serilog;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 
@@ -15,6 +16,7 @@ namespace Maurosoft.FileSystem.Adapters
     {
         public string Prefix { get; }
         public string RootPath { get; }
+        public ILogger Logger { get; protected set; }
 
         protected Adapter(string prefix, string rootPath)
         {

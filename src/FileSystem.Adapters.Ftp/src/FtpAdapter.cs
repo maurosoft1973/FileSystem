@@ -12,6 +12,7 @@ using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 using FluentFTP;
+using Serilog;
 
 namespace Maurosoft.FileSystem.Adapters.Ftp
 {
@@ -19,9 +20,10 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
     {
         private readonly FtpClient client;
 
-        public FtpAdapter(string prefix, string rootPath, FtpClient client) : base(prefix, rootPath)
+        public FtpAdapter(string prefix, string rootPath, FtpClient client, ILogger logger) : base(prefix, rootPath)
         {
             this.client = client;
+            this.Logger = logger;
         }
 
         public override void Dispose()

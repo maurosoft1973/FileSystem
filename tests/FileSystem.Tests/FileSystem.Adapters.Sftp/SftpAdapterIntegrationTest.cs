@@ -5,6 +5,8 @@ using FileSystem.Tests.Base;
 using Maurosoft.FileSystem.Adapters.Sftp;
 using Renci.SshNet;
 using FileSystem.Tests.FileSystem.Adapters.Sftp;
+using Serilog;
+using Serilog.Sinks.InMemory;
 
 namespace Tests.FileSystem.Adapters.Sftp;
 
@@ -13,23 +15,29 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
     public override string Prefix => "sftpadapter1";
     public override string RootPath => "/";
 
-    private SftpFixture _fixture { get; }
-    private SftpClient _sftpClient;
+    private SftpFixture Fixture { get; }
+    private SftpClient sftpClient;
 
     private readonly ITestOutputHelper _outputHelper;
 
     public SftpAdapterIntegrationTest(ITestOutputHelper outputHelper, SftpFixture sftpFixture)
     {
         _outputHelper = outputHelper;
-        _fixture = sftpFixture;
+        Fixture = sftpFixture;
     }
 
     public Task DisposeAsync() => Task.CompletedTask;
 
     public Task InitializeAsync()
     {
-        _sftpClient = new SftpClient(_fixture.GetHostname(), _fixture.GetPort(), _fixture.UserName, _fixture.Password);
-        _adapter = new SftpAdapter(Prefix, RootPath, _sftpClient);
+        Log.CloseAndFlush();
+
+        Logger = new LoggerConfiguration()
+                     .WriteTo.InMemory()
+                     .CreateLogger();
+
+        sftpClient = new SftpClient(Fixture.GetHostname(), Fixture.GetPort(), Fixture.UserName, Fixture.Password);
+        _adapter = new SftpAdapter(Prefix, RootPath, sftpClient, Logger);
         _adapter.Connect();
         return Task.CompletedTask;
     }

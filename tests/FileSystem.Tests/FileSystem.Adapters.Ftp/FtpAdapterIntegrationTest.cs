@@ -5,6 +5,9 @@ using Xunit.Abstractions;
 using FluentFTP;
 using Maurosoft.FileSystem.Adapters.Ftp;
 using FileSystem.Tests.Base;
+using Serilog;
+using Serilog.Core;
+using Serilog.Sinks.InMemory;
 
 namespace Tests.FileSystem.Adapters.Ftp;
 
@@ -28,9 +31,15 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
 
     public Task InitializeAsync()
     {
+        Log.CloseAndFlush();
+
+        Logger = new LoggerConfiguration()
+                     .WriteTo.InMemory()
+                     .CreateLogger();
+
         _ftpClient = new FtpClient(_fixture.GetHostname(), _fixture.UserName, _fixture.Password, _fixture.GetPort());
         _ftpClient.Connect();
-        _adapter = new FtpAdapter(Prefix, RootPath, _ftpClient);
+        _adapter = new FtpAdapter(Prefix, RootPath, _ftpClient, Logger);
         return Task.CompletedTask;
     }
 

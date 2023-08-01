@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Sinks.InMemory;
 
 namespace FileSystem.Tests.Base;
 
@@ -10,17 +12,19 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
 {
     public override string Prefix => typeof(A).FullName;
     public override string RootPath => "/";
-
     public C Client { get; set; }
-
-    //public abstract void InizializeClient();
+    public ILogger Logger { get; protected set; }
 
     [TestInitialize]
     public void Init()
     {
-        //InizializeClient();
+        Log.CloseAndFlush();
 
-        _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath, Client)!;
+        Logger = new LoggerConfiguration()
+                     .WriteTo.InMemory()
+                     .CreateLogger();
+
+        _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath, Client, Logger)!;
     }
 
     [TestMethod]
