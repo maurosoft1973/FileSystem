@@ -4,12 +4,17 @@
 [![FileSystem [Build]](https://github.com/maurosoft1973/FileSystem/actions/workflows/build.yml/badge.svg)](https://github.com/maurosoft1973/FileSystem/actions/workflows/build.yml)
 [![FileSystem [Sonarqube]](https://github.com/maurosoft1973/FileSystem/actions/workflows/sonarqube.yml/badge.svg)](https://github.com/maurosoft1973/FileSystem/actions/workflows/sonarqube.yml)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=alert_status)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem) \
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Maurosoft_FileSystem&metric=coverage)](https://sonarcloud.io/summary/overall?id=Maurosoft_FileSystem)
-[![Codecov](https://codecov.io/gh/maurosoft1973/FileSystem/branch/master/graph/badge.svg?token=g5nMtgLUnM)](https://codecov.io/gh/maurosoft1973/FileSystem)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=coverage)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=bugs)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=maurosoft1973_FileSystem&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=maurosoft1973_FileSystem)
 
 ## Introduction
 Maurosoft FileSystem is a file system abstraction supporting multiple adapters.
