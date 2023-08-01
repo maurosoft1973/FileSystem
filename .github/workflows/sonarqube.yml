@@ -1,0 +1,30 @@
+name: Sonarqube Analysis
+
+env:
+  NET_VERSION: '7.x'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOST: https://sonarcloud.io
+  SONAR_ORGANIZATION: maurosoft1973
+  SONAR_PROJECT: maurosoft1973_FileSystem
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+      - 'develop'
+
+jobs:
+  quality:
+    name: Sonarqube Analysis
+    runs-on: ubuntu-latest
+    container:
+      image: maurosoft1973/alpine-net-sonarqube-scanner
+    steps:
+      - name: Push analysis
+        run: |
+            dotnet sonarscanner begin /o:"${{ env.SONAR_ORGANIZATION }}" /k:"${{ env.SONAR_PROJECT }}" /d:sonar.login="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+            dotnet build --no-incremental
+            dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
+            dotnet sonarscanner end /d:sonar.login="${{ env.SONAR_TOKEN }}"
+  
