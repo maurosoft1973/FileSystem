@@ -227,8 +227,6 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
             try
             {
-                var stringContents = Encoding.UTF8.GetString(contents, 0, contents.Length);
-
                 await Task.Run(() =>
                 {
                     var file = client.OpenWrite(PrependRootPath(path));

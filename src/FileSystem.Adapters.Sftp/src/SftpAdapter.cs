@@ -130,9 +130,10 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
+                var files = Enumerable.Empty<IFile>();
+
                 var task = Task.Run(() =>
                 {
-                    var files = Enumerable.Empty<IFile>();
                     try
                     {
                         files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
@@ -162,9 +163,10 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
             try
             {
+                var directories = Enumerable.Empty<IDirectory>();
+
                 var task = Task.Run(() =>
                 {
-                    var directories = Enumerable.Empty<IDirectory>();
                     try
                     {
                         directories = client.ListDirectory(path).Where(item => item.IsDirectory).Select(ModelFactory.CreateDirectory).ToList();
