@@ -37,4 +37,22 @@ public class LocalAdapterTest : UnitTestAdapter<LocalAdapter>
     [TestMethod("LocalAdapter_DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
+    [TestMethod("LocalAdapter_DeleteDirectoryAsync")]
+    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
+
+    [TestMethod("LocalAdapter_DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException")]
+    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod("LocalAdapter_ReadFile")]
+    public override void ReadFile() => base.ReadFile();
+
+    [TestMethod("LocalAdapter_ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException")]
+    public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [TestMethod("LocalAdapter_ReadFileAsync")]
+    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+
+    [TestMethod("LocalAdapter_ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+
 }

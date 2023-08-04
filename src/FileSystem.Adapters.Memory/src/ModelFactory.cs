@@ -16,7 +16,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
             {
                 Name = file.Name,
                 Path = file.FullName,
-                Length = 0,
+                Length = file.Content.Length,
                 LastModifiedDateTime = DateTime.Now,
             };
         }

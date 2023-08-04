@@ -2,6 +2,7 @@
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -98,5 +99,79 @@ public abstract class TestAdapter<A> where A : Adapter
 
         //Act and Assert
         await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.DeleteFileAsync(directory + "/file1"));
+    }
+
+    public virtual async Task DeleteDirectoryAsync()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        await _adapter!.CreateDirectoryAsync(directory, new System.Threading.CancellationToken());
+
+        //Act
+        await _adapter!.DeleteDirectoryAsync(directory);
+
+        //Act and Assert
+        Assert.IsFalse(_adapter!.DirectoryExists(directory));
+    }
+
+    public virtual async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        //Act and Assert
+        await Assert.ThrowsExceptionAsync<DirectoryNotFoundException>(async () => await _adapter!.DeleteDirectoryAsync(directory));
+    }
+
+    public virtual void ReadFile()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        _adapter!.CreateDirectory(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+        _adapter!.WriteFile(directory + "/" + fileName, "ReadFile");
+
+        //Act
+        byte[] readFiles = _adapter!.ReadFile(directory + "/" + fileName);
+
+        //Act and Assert
+        Assert.AreEqual(8, readFiles.Length);
+    }
+
+    public virtual void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        _adapter!.CreateDirectory(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+
+        //Act and Assert
+        Assert.ThrowsException<FileNotFoundException>(() => _adapter!.ReadFile(directory + "/" + fileName));
+    }
+
+    public virtual async Task ReadFileAsync()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        await _adapter!.CreateDirectoryAsync(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+        await _adapter!.WriteFileAsync(directory + "/" + fileName, "ReadFile");
+
+        //Act
+        byte[] readFiles = await _adapter!.ReadFileAsync(directory + "/" + fileName);
+
+        //Act and Assert
+        Assert.AreEqual(8, readFiles.Length);
+    }
+
+    public virtual async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        await _adapter!.CreateDirectoryAsync(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+
+        //Act and Assert
+        await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.ReadFileAsync(directory + "/" + fileName));
     }
 }

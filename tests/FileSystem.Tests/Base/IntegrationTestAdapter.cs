@@ -59,4 +59,28 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     [TestCategory("IntegrationTest")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override void ReadFile() => base.ReadFile();
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+
 }

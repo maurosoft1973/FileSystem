@@ -50,4 +50,27 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
     [TestCategory("UnitTest")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override void ReadFile() => base.ReadFile();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 }

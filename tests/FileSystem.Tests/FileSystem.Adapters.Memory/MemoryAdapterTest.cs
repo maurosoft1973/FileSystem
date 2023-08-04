@@ -35,4 +35,22 @@ public class MemoryAdapterTest : UnitTestAdapter<MemoryAdapter>
 
     [TestMethod("MemoryAdapter_DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod("MemoryAdapter_DeleteDirectoryAsync")]
+    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
+
+    [TestMethod("MemoryAdapter_DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException")]
+    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod("MemoryAdapter_ReadFile")]
+    public override void ReadFile() => base.ReadFile();
+
+    [TestMethod("MemoryAdapter_ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException")]
+    public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [TestMethod("MemoryAdapter_ReadFileAsync")]
+    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+
+    [TestMethod("MemoryAdapter_ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 }

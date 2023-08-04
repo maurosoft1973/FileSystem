@@ -150,9 +150,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
             await GetFileAsync(path, cancellationToken);
 
-            var memoryFile = new MemoryFile();
-
-            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
+            var memoryFile = _files[PrependRootPath(path)];
 
             return memoryFile.Content;
         }
@@ -161,9 +159,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
             await GetFileAsync(path, cancellationToken);
 
-            var memoryFile = new MemoryFile();
-
-            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
+            var memoryFile = _files[PrependRootPath(path)];
 
             return System.Text.Encoding.UTF8.GetString(memoryFile.Content);
         }

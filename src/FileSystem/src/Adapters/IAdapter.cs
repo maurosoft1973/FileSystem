@@ -34,12 +34,12 @@ namespace Maurosoft.FileSystem.Adapters
         string ReadTextFile(string path);
         Task<string> ReadTextFileAsync(string path, CancellationToken cancellationToken = default);
         void WriteFile(string path, byte[] contents, bool overwrite = false);
-        Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default);
         void WriteFile(string path, string contents, bool overwrite = false);
         Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default);
+        Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default);
         void AppendFile(string path, byte[] contents);
-        Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default);
         void AppendFile(string path, string contents);
         Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default);
+        Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default);
     }
 }

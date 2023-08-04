@@ -121,12 +121,26 @@ namespace Maurosoft.FileSystem.Adapters
 
         public byte[] ReadFile(string path)
         {
-            return ReadFileAsync(path).Result;
+            try
+            {
+                return ReadFileAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
         public string ReadTextFile(string path)
         {
-            return ReadTextFileAsync(path).Result;
+            try
+            {
+                return ReadTextFileAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
         public void WriteFile(string path, byte[] contents, bool overwrite = false)
