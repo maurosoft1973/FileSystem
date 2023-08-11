@@ -24,20 +24,11 @@ namespace Maurosoft.FileSystem.Adapters
             RootPath = rootPath;
         }
 
-        protected string PrependRootPath(string path)
-        {
-            return Path.Combine(RootPath, path);
-        }
+        protected string PrependRootPath(string path) => Path.Combine(RootPath, path);
 
-        protected string[] GetPathParts(string path)
-        {
-            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-        }
+        protected string[] GetPathParts(string path) => path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-        protected string GetLastPathPart(string path)
-        {
-            return GetPathParts(path).Length > 0 ? GetPathParts(path).Last() : String.Empty;
-        }
+        protected string GetLastPathPart(string path) => GetPathParts(path).Length > 0 ? GetPathParts(path).Last() : String.Empty;
 
         protected string GetParentPathPart(string path)
         {
@@ -46,30 +37,15 @@ namespace Maurosoft.FileSystem.Adapters
             return string.Join("/", pathParts.Take(pathParts.Length - 1));
         }
 
-        public IFile GetFile(string path)
-        {
-            return GetFileAsync(path).Result;
-        }
+        public IFile GetFile(string path) => GetFileAsync(path).Result;
 
-        public IDirectory GetDirectory(string path)
-        {
-            return GetDirectoryAsync(path).Result;
-        }
+        public IDirectory GetDirectory(string path) => GetDirectoryAsync(path).Result;
 
-        public IEnumerable<IFile> GetFiles(string path = "")
-        {
-            return GetFilesAsync(path).Result;
-        }
+        public IEnumerable<IFile> GetFiles(string path = "") => GetFilesAsync(path).Result;
 
-        public IEnumerable<IDirectory> GetDirectories(string path = "")
-        {
-            return GetDirectoriesAsync(path).Result;
-        }
+        public IEnumerable<IDirectory> GetDirectories(string path = "") => GetDirectoriesAsync(path).Result;
 
-        public bool FileExists(string path)
-        {
-            return FileExistsAsync(path).Result;
-        }
+        public bool FileExists(string path) => FileExistsAsync(path).Result;
 
         public async Task<bool> FileExistsAsync(string path, CancellationToken cancellationToken = default)
         {
@@ -85,10 +61,7 @@ namespace Maurosoft.FileSystem.Adapters
             return true;
         }
 
-        public bool DirectoryExists(string path)
-        {
-            return DirectoryExistsAsync(path).Result;
-        }
+        public bool DirectoryExists(string path) => DirectoryExistsAsync(path).Result;
 
         public async Task<bool> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
         {
@@ -104,20 +77,11 @@ namespace Maurosoft.FileSystem.Adapters
             return true;
         }
 
-        public void CreateDirectory(string path)
-        {
-            CreateDirectoryAsync(path).Wait();
-        }
+        public void CreateDirectory(string path) => CreateDirectoryAsync(path).Wait();
 
-        public void DeleteDirectory(string path)
-        {
-            DeleteDirectoryAsync(path).Wait();
-        }
+        public void DeleteDirectory(string path) => DeleteDirectoryAsync(path).Wait();
 
-        public void DeleteFile(string path)
-        {
-            DeleteFileAsync(path).Wait();
-        }
+        public void DeleteFile(string path) => DeleteFileAsync(path).Wait();
 
         public byte[] ReadFile(string path)
         {
@@ -143,35 +107,17 @@ namespace Maurosoft.FileSystem.Adapters
             }
         }
 
-        public void WriteFile(string path, byte[] contents, bool overwrite = false)
-        {
-            WriteFileAsync(path, contents, overwrite).Wait();
-        }
+        public void WriteFile(string path, byte[] contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
 
-        public void WriteFile(string path, string contents, bool overwrite = false)
-        {
-            WriteFileAsync(path, contents, overwrite).Wait();
-        }
+        public void WriteFile(string path, string contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
 
-        public async Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default)
-        {
-            await WriteFileAsync(path, Encoding.UTF8.GetBytes(contents), overwrite, cancellationToken);
-        }
+        public async Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default) => await WriteFileAsync(path, Encoding.UTF8.GetBytes(contents), overwrite, cancellationToken);
 
-        public void AppendFile(string path, byte[] contents)
-        {
-            AppendFileAsync(path, contents).Wait();
-        }
+        public void AppendFile(string path, byte[] contents) => AppendFileAsync(path, contents).Wait();
 
-        public void AppendFile(string path, string contents)
-        {
-            AppendFileAsync(path, contents).Wait();
-        }
+        public void AppendFile(string path, string contents) => AppendFileAsync(path, contents).Wait();
 
-        public async Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default)
-        {
-            await AppendFileAsync(path, Encoding.UTF8.GetBytes(contents), cancellationToken);
-        }
+        public async Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default) => await AppendFileAsync(path, Encoding.UTF8.GetBytes(contents), cancellationToken);
 
         public abstract void Dispose();
         public abstract void Connect();

@@ -33,15 +33,17 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
         public override void Connect()
         {
-            if (client.IsConnected)
-                return;
-
             try
             {
+                if (client.IsConnected)
+                    return;
+
                 client.Connect();
+                Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));
             }
             catch (Exception exception)
             {
+                Logger?.Error("{Adapter} - Connect error: {ConnectErrorMessage}", nameof(FtpAdapter), exception.Message);
                 throw Exception(exception);
             }
         }

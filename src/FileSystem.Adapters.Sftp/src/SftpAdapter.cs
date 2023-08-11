@@ -34,15 +34,17 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
         public override void Connect()
         {
-            if (client.IsConnected)
-                return;
-
             try
             {
+                if (client.IsConnected)
+                    return;
+
                 client.Connect();
+                Logger?.Information("{Adapter} - Connected succsefull", nameof(SftpAdapter));
             }
             catch (Exception exception)
             {
+                Logger?.Error("{Adapter} - Connect error: {ConnectErrorMessage}", nameof(SftpAdapter), exception.Message);
                 throw Exception(exception);
             }
         }
