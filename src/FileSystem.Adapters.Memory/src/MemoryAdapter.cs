@@ -20,7 +20,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
 
         public MemoryAdapter(string prefix, string rootPath) : base(prefix, rootPath)
         {
-            _directories.Add(System.IO.Path.Combine(rootPath), new MemoryDirectory() { FullName = rootPath, Name = GetLastPathPart(rootPath) });
+            _directories.Add(System.IO.Path.Combine(rootPath), new MemoryDirectory() { FullName = rootPath, Name = GetLastPathPart(rootPath), Root = "" });
         }
 
         public override void Dispose()
@@ -111,7 +111,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
 
             try
             {
-                return await Task.Run(() => _directories.Where(p => p.Key.StartsWith(path)).Select(p => ModelFactory.CreateDirectory(p.Value)).AsEnumerable(), cancellationToken);
+                return await Task.Run(() => _directories.Where(p => p.Value.Root == path).Select(p => ModelFactory.CreateDirectory(p.Value)).AsEnumerable(), cancellationToken);
             }
             catch (Exception exception)
             {
@@ -126,7 +126,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
 
             try
             {
-                await Task.Run(() => _directories.Add(PrependRootPath(path), new MemoryDirectory() { Name = System.IO.Path.GetDirectoryName(PrependRootPath(path)), FullName = PrependRootPath(path) }), cancellationToken);
+                await Task.Run(() => _directories.Add(PrependRootPath(path), new MemoryDirectory() { Name = System.IO.Path.GetFileName(path), Root = System.IO.Path.GetDirectoryName(PrependRootPath(path)).Replace("\\", "/"), FullName = PrependRootPath(path) }), cancellationToken);
             }
             catch (Exception exception)
             {

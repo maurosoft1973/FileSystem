@@ -219,4 +219,222 @@ public class FileSystemTest
         //Assert
         Assert.AreEqual(2, files.Count);
     }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetFiles_IfPathNotExists_Should_ThrowException_DirectoryNotFoundException()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld1.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+        memoryAdapter.WriteFile("/home/helloworld2.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => fileSystem.GetFiles("memory-1://home1"));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(DirectoryNotFoundException));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetDirectories_IfPathExists_Should_ReturnDirectories()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("home");
+        memoryAdapter.CreateDirectory("home/home1");
+        memoryAdapter.CreateDirectory("home/home2");
+        memoryAdapter.CreateDirectory("home/home3");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var directories = fileSystem.GetDirectories("memory-1://home").ToList();
+
+        //Assert
+        Assert.AreEqual(3, directories.Count);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetDirectories_IfPathNotExists_Should_ThrowException_DirectoryNotFoundException()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("home");
+        memoryAdapter.CreateDirectory("home/home1");
+        memoryAdapter.CreateDirectory("home/home2");
+        memoryAdapter.CreateDirectory("home/home3");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => fileSystem.GetDirectories("memory-1://home1"));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(DirectoryNotFoundException));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_FileExists_IfPathExists_Should_ReturnTrue()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld1.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var fileExists = fileSystem.FileExists("memory-1://home/helloworld1.txt");
+
+        //Assert
+        Assert.IsTrue(fileExists);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_FileExists_IfPathNotExists_Should_ReturnFalse()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld1.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var fileExists = fileSystem.FileExists("memory-1://home/helloworld2.txt");
+
+        //Assert
+        Assert.IsFalse(fileExists);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_DirectoryExists_IfPathExists_Should_ReturnTrue()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("home");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var dirExists = fileSystem.DirectoryExists("memory-1://home");
+
+        //Assert
+        Assert.IsTrue(dirExists);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_DirectoryExists_IfPathNotExists_Should_ReturnFalse()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("home");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var dirExists = fileSystem.DirectoryExists("memory-1://home1");
+
+        //Assert
+        Assert.IsFalse(dirExists);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_CreateDirectory_IfSuccess_Should_ReturnExistsTrue()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        fileSystem.CreateDirectory("memory-1://home");
+
+        //Assert
+        Assert.IsTrue(fileSystem.DirectoryExists("memory-1://home"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_DeleteDirectory_IfSuccess_Should_ReturnExistsFalse()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+        fileSystem.CreateDirectory("memory-1://home");
+
+        //Act
+        fileSystem.DeleteDirectory("memory-1://home");
+
+        //Assert
+        Assert.IsFalse(fileSystem.DirectoryExists("memory-1://home"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_DeleteFile_IfSuccess_Should_ReturnExistsFalse()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        fileSystem.DeleteFile("memory-1:///home/helloworld.txt");
+
+        //Assert
+        Assert.IsFalse(fileSystem.FileExists("memory-1://helloworld.txt"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_ReadFile_IfExist_Should_ReturnContents()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var contents = fileSystem.ReadFile("memory-1:///home/helloworld.txt");
+
+        //Assert
+        Assert.AreEqual("HelloWorld", System.Text.Encoding.UTF8.GetString(contents));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_ReadTextFile_IfExist_Should_ReturnContents()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var contents = fileSystem.ReadTextFile("memory-1:///home/helloworld.txt");
+
+        //Assert
+        Assert.AreEqual("HelloWorld", contents);
+    }
 }

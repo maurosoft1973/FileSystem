@@ -8,5 +8,6 @@ namespace Maurosoft.FileSystem.Adapters.Memory
     {
         public string Name { get; set; } = String.Empty;
         public string FullName { get; set; } = String.Empty;
+        public string Root { get; set; } = String.Empty;
     }
 }
