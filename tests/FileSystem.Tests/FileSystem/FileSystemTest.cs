@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
 using Serilog;
+using Maurosoft.FileSystem.Adapters.Memory;
+using System.Text;
+using System;
 
 namespace Tests.FileSystem;
 
@@ -58,12 +61,92 @@ public class FileSystemTest
     public void FileSystem_GetAdapter_NoRegistred_Should_ThrowException_NoAdaptersRegisteredException()
     {
         //Arrange
-#pragma warning disable S1481 // Unused local variables should be removed
         var localAdapter1 = new LocalAdapter("prefix-1", "/");
-#pragma warning restore S1481 // Unused local variables should be removed
         var fileSystem = new Maurosoft.FileSystem.FileSystem();
 
         //Act && Assert
         Assert.ThrowsException<NoAdaptersRegisteredException>(() => fileSystem.GetAdapter("prefix-1"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetAdapter_RegistredWithSamePrefix_Should_ThrowException_DuplicateAdapterPrefixException()
+    {
+        //Arrange
+        var localAdapter1 = new LocalAdapter("prefix-1", "/");
+        var localAdapter2 = new LocalAdapter("prefix-1", "/");
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(localAdapter1);
+        fileSystem.Adapters.Add(localAdapter2);
+
+        //Act && Assert
+        Assert.ThrowsException<DuplicateAdapterPrefixException>(() => fileSystem.GetAdapter("prefix-1"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetAdapter_WithPrefixNotRegistred_Should_ThrowException_AdapterNotFoundException()
+    {
+        //Arrange
+#pragma warning disable S1481 // Unused local variables should be removed
+        var localAdapter1 = new LocalAdapter("prefix-1", "/");
+#pragma warning restore S1481 // Unused local variables should be removed
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(localAdapter1);
+
+        //Act && Assert
+        Assert.ThrowsException<AdapterNotFoundException>(() => fileSystem.GetAdapter("prefix-2"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetFile_IfFileExists_Should_ReturnFile()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var file = fileSystem.GetFile("memory-1://helloworld.txt");
+
+        //Assert
+        Assert.AreEqual("helloworld.txt", file.Name);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetFile_IfFileNotExists_Should_ThrowException_FileNotFoundException()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => fileSystem.GetFile("memory-1://helloworld1.txt"));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(FileNotFoundException));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    [DataRow("memory-1:/helloworld1.txt", DisplayName = "")]
+    [DataRow("memory-1:helloworld1.txt", DisplayName = "")]
+    [DataRow("memory-1helloworld1.txt", DisplayName = "")]
+    public void FileSystem_GetFile_IfPrefixIsInvalid_Should_ThrowException_PrefixNotFoundInPathException(string prefix)
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        Assert.ThrowsException<PrefixNotFoundInPathException>(() => fileSystem.GetFile(prefix));
     }
 }
