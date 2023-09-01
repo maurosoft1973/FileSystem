@@ -396,7 +396,7 @@ public class FileSystemTest
         fileSystem.Adapters.Add(memoryAdapter);
 
         //Act
-        fileSystem.DeleteFile("memory-1:///home/helloworld.txt");
+        fileSystem.DeleteFile("memory-1://home/helloworld.txt");
 
         //Assert
         Assert.IsFalse(fileSystem.FileExists("memory-1://helloworld.txt"));
@@ -414,7 +414,7 @@ public class FileSystemTest
         fileSystem.Adapters.Add(memoryAdapter);
 
         //Act
-        var contents = fileSystem.ReadFile("memory-1:///home/helloworld.txt");
+        var contents = fileSystem.ReadFile("memory-1://home/helloworld.txt");
 
         //Assert
         Assert.AreEqual("HelloWorld", System.Text.Encoding.UTF8.GetString(contents));
@@ -432,9 +432,125 @@ public class FileSystemTest
         fileSystem.Adapters.Add(memoryAdapter);
 
         //Act
-        var contents = fileSystem.ReadTextFile("memory-1:///home/helloworld.txt");
+        var contents = fileSystem.ReadTextFile("memory-1://home/helloworld.txt");
 
         //Assert
         Assert.AreEqual("HelloWorld", contents);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_WriteFile_IfSuccess_Should_ReturnFileExists()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        //Assert
+        Assert.IsTrue(fileSystem.FileExists("memory-1://home/helloworld.txt"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_WriteFile_IfOverwriteFile_Should_ReturnContentOverWrite()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        //Act
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorldOverWrite"), true);
+        var file = fileSystem.GetFile("memory-1://home/helloworld.txt");
+
+        //Assert
+        Assert.AreEqual("HelloWorldOverWrite", System.Text.Encoding.UTF8.GetString(file.Content));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_CopyFile_IfSuccess_Should_ReturnExistsDestinationFile()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        //Act
+        fileSystem.CopyFile("memory-1://home/helloworld.txt", "memory-1://home/helloworld-copy.txt");
+
+        //Assert
+        Assert.IsTrue(fileSystem.FileExists("memory-1://home/helloworld-copy.txt"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_CopyFile_IfOverWriteFile_Should_ReturnContentSourceFile()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorldOverWrite"));
+        fileSystem.WriteFile("memory-1://home/helloworld-copy.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorldCopy"));
+
+        //Act
+        fileSystem.CopyFile("memory-1://home/helloworld.txt", "memory-1://home/helloworld-copy.txt", true);
+        var file = fileSystem.GetFile("memory-1://home/helloworld-copy.txt");
+
+        //Assert
+        Assert.AreEqual("HelloWorldOverWrite", System.Text.Encoding.UTF8.GetString(file.Content));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_CopyFile_AcrossAdapter_IfSuccess_Should_ReturnExistsFile()
+    {
+        //Arrange
+        var memoryAdapter1 = new MemoryAdapter("memory-1", "/");
+        var memoryAdapter2 = new MemoryAdapter("memory-2", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter1);
+        fileSystem.Adapters.Add(memoryAdapter2);
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        //Act
+        fileSystem.CopyFile("memory-1://home/helloworld.txt", "memory-2://home/helloworld.txt");
+
+        //Assert
+        Assert.IsTrue(fileSystem.FileExists("memory-2://home/helloworld.txt"));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_CopyFile_AcrossAdapter_IfOverWriteSuccess_Should_ReturnContentOverWrite()
+    {
+        //Arrange
+        var memoryAdapter1 = new MemoryAdapter("memory-1", "/");
+        var memoryAdapter2 = new MemoryAdapter("memory-2", "/");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter1);
+        fileSystem.Adapters.Add(memoryAdapter2);
+        fileSystem.WriteFile("memory-1://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorldNew"));
+        fileSystem.WriteFile("memory-2://home/helloworld.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorldOld"));
+
+        //Act
+        fileSystem.CopyFile("memory-1://home/helloworld.txt", "memory-2://home/helloworld.txt", true);
+        var file = fileSystem.GetFile("memory-2://home/helloworld.txt");
+
+        //Assert
+        Assert.AreEqual("HelloWorldNew", System.Text.Encoding.UTF8.GetString(file.Content));
     }
 }
