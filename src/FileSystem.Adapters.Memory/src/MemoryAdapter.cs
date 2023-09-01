@@ -191,13 +191,12 @@ namespace Maurosoft.FileSystem.Adapters.Memory
 
         public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
         {
-            await GetFileAsync(path, cancellationToken);
+            var file = await GetFileAsync(path, cancellationToken);
 
-            var memoryFile = new MemoryFile();
+            var content = file.Content ?? Array.Empty<byte>();
+            file.Content = content.Concat(contents).ToArray();
 
-            await Task.Run(() => _files.TryGetValue(path, out var memoryFile));
-
-            memoryFile.Content = memoryFile.Content.Concat(contents).ToArray();
+            await Task.Run(() => _files[PrependRootPath(path)].Content = file.Content);
         }
     }
 }
