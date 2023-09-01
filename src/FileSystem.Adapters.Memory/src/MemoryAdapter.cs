@@ -178,6 +178,9 @@ namespace Maurosoft.FileSystem.Adapters.Memory
                 Name = System.IO.Path.GetFileName(path),
             };
 
+            if (!_directories.Keys.Contains(PrependRootPath(System.IO.Path.GetDirectoryName(path)).Replace(@"\", "/")))
+                _directories.Add(PrependRootPath(System.IO.Path.GetDirectoryName(path)).Replace(@"\", "/"), new MemoryDirectory() { FullName = PrependRootPath(System.IO.Path.GetDirectoryName(path)).Replace(@"\", "/"), Name = System.IO.Path.GetDirectoryName(path) });
+
             memoryFile.Content = contents;
 
             if (!found)

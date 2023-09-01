@@ -6,6 +6,7 @@ using Serilog;
 using Maurosoft.FileSystem.Adapters.Memory;
 using System.Text;
 using System;
+using System.Linq;
 
 namespace Tests.FileSystem;
 
@@ -88,9 +89,7 @@ public class FileSystemTest
     public void FileSystem_GetAdapter_WithPrefixNotRegistred_Should_ThrowException_AdapterNotFoundException()
     {
         //Arrange
-#pragma warning disable S1481 // Unused local variables should be removed
         var localAdapter1 = new LocalAdapter("prefix-1", "/");
-#pragma warning restore S1481 // Unused local variables should be removed
         var fileSystem = new Maurosoft.FileSystem.FileSystem();
         fileSystem.Adapters.Add(localAdapter1);
 
@@ -134,9 +133,9 @@ public class FileSystemTest
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    [DataRow("memory-1:/helloworld1.txt", DisplayName = "")]
-    [DataRow("memory-1:helloworld1.txt", DisplayName = "")]
-    [DataRow("memory-1helloworld1.txt", DisplayName = "")]
+    [DataRow("memory-1:/helloworld.txt", DisplayName = "")]
+    [DataRow("memory-1:helloworld.txt", DisplayName = "")]
+    [DataRow("memory-1helloworld.txt", DisplayName = "")]
     public void FileSystem_GetFile_IfPrefixIsInvalid_Should_ThrowException_PrefixNotFoundInPathException(string prefix)
     {
         //Arrange
@@ -148,5 +147,76 @@ public class FileSystemTest
 
         //Act & Assert
         Assert.ThrowsException<PrefixNotFoundInPathException>(() => fileSystem.GetFile(prefix));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetDirectory_IfDirectoryExists_Should_ReturnDirectory()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("helloworld");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var directory = fileSystem.GetDirectory("memory-1://helloworld");
+
+        //Assert
+        Assert.AreEqual("/helloworld", directory.Path);
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetDirectory_IfDirectoryNotExists_Should_ThrowException_DirectoryNotFoundException()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("helloworld");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => fileSystem.GetDirectory("memory-1://helloworld1"));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(DirectoryNotFoundException));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    [DataRow("memory-1:/helloworld", DisplayName = "")]
+    [DataRow("memory-1:helloworld", DisplayName = "")]
+    [DataRow("memory-1helloworld", DisplayName = "")]
+    public void FileSystem_GetDirectory_IfPrefixIsInvalid_Should_ThrowException_PrefixNotFoundInPathException(string prefix)
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.CreateDirectory("helloworld");
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act & Assert
+        Assert.ThrowsException<PrefixNotFoundInPathException>(() => fileSystem.GetDirectory(prefix));
+    }
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public void FileSystem_GetFiles_IfFilesExists_Should_ReturnFiles()
+    {
+        //Arrange
+        var memoryAdapter = new MemoryAdapter("memory-1", "/");
+        memoryAdapter.WriteFile("/home/helloworld1.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+        memoryAdapter.WriteFile("/home/helloworld2.txt", System.Text.Encoding.UTF8.GetBytes("HelloWorld"));
+
+        var fileSystem = new Maurosoft.FileSystem.FileSystem();
+        fileSystem.Adapters.Add(memoryAdapter);
+
+        //Act
+        var files = fileSystem.GetFiles("memory-1://home").ToList();
+
+        //Assert
+        Assert.AreEqual(2, files.Count);
     }
 }
