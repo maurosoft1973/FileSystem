@@ -20,10 +20,9 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
     {
         private readonly FtpClient client;
 
-        public FtpAdapter(string prefix, string rootPath, FtpClient client, ILogger logger) : base(prefix, rootPath)
+        public FtpAdapter(string prefix, string rootPath, FtpClient client) : base(prefix, rootPath)
         {
             this.client = client;
-            this.Logger = logger;
         }
 
         public override void Dispose()
@@ -36,7 +35,10 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             try
             {
                 if (client.IsConnected)
+                {
+                    Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));
                     return;
+                }
 
                 client.Connect();
                 Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));

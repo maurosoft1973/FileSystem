@@ -16,7 +16,7 @@ namespace Maurosoft.FileSystem.Adapters
     {
         public string Prefix { get; }
         public string RootPath { get; }
-        public ILogger? Logger { get; protected set; }
+        protected readonly ILogger Logger = Log.ForContext(typeof(Adapter));
 
         protected Adapter(string prefix, string rootPath)
         {

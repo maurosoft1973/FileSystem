@@ -1,5 +1,7 @@
 ﻿using Maurosoft.FileSystem.Exceptions;
 using Maurosoft.FileSystem.Models;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +27,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
         {
         }
 
-        public override void Connect()
-        {
-        }
+        public override void Connect() => Logger?.Information("{Adapter} - Connected succsefull", nameof(MemoryAdapter));
 
         public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
         {

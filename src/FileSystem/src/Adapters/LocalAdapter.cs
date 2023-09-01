@@ -22,9 +22,7 @@ namespace Maurosoft.FileSystem.Adapters
         {
         }
 
-        public override void Connect()
-        {
-        }
+        public override void Connect() => Logger?.Information("{Adapter} - Connected succsefull", nameof(LocalAdapter));
 
         public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
         {

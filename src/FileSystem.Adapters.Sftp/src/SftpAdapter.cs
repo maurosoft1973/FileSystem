@@ -13,7 +13,6 @@ using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 using Renci.SshNet.Sftp;
-using Serilog;
 
 namespace Maurosoft.FileSystem.Adapters.Sftp
 {
@@ -21,10 +20,9 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
     {
         private readonly SftpClient client;
 
-        public SftpAdapter(string prefix, string rootPath, SftpClient client, ILogger logger) : base(prefix, rootPath)
+        public SftpAdapter(string prefix, string rootPath, SftpClient client) : base(prefix, rootPath)
         {
             this.client = client;
-            this.Logger = logger;
         }
 
         public override void Dispose()
@@ -37,7 +35,10 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             try
             {
                 if (client.IsConnected)
+                {
+                    Logger?.Information("{Adapter} - Connected succsefull", nameof(SftpAdapter));
                     return;
+                }
 
                 client.Connect();
                 Logger?.Information("{Adapter} - Connected succsefull", nameof(SftpAdapter));
