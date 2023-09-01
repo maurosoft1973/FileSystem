@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
 using Tests.Base;
+using Xunit;
 
 namespace Tests.FileSystem.Adapters.Local;
 
@@ -18,6 +19,9 @@ public class LocalAdapterTest : UnitTestAdapter<LocalAdapter>
 
     [TestMethod("LocalAdapter_Instantiation_RootPath_Should_Return_Correct")]
     public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
+
+    [TestMethod("LocalAdapter_Connect_ClientExist_Should_ConnectedSuccsefull")]
+    public override void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull() => base.Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull();
 
     [TestMethod("LocalAdapter_GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();

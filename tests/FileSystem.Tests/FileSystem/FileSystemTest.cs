@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
+using Serilog;
 
 namespace Tests.FileSystem;
 
@@ -57,7 +58,9 @@ public class FileSystemTest
     public void FileSystem_GetAdapter_NoRegistred_Should_ThrowException_NoAdaptersRegisteredException()
     {
         //Arrange
+#pragma warning disable S1481 // Unused local variables should be removed
         var localAdapter1 = new LocalAdapter("prefix-1", "/");
+#pragma warning restore S1481 // Unused local variables should be removed
         var fileSystem = new Maurosoft.FileSystem.FileSystem();
 
         //Act && Assert

@@ -18,6 +18,9 @@ public class MemoryAdapterTest : UnitTestAdapter<MemoryAdapter>
     [TestMethod("MemoryAdapter_Instantiation_RootPath_Should_Return_Correct")]
     public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
 
+    [TestMethod("MemoryAdapter_Connect_ClientExist_Should_ConnectedSuccsefull")]
+    public override void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull() => base.Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull();
+
     [TestMethod("MemoryAdapter_GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();
 

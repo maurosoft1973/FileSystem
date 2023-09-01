@@ -13,18 +13,17 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     public override string Prefix => typeof(A).FullName;
     public override string RootPath => "/";
     public C Client { get; set; }
-    public ILogger Logger { get; protected set; }
 
     [TestInitialize]
     public void Init()
     {
         Log.CloseAndFlush();
 
-        Logger = new LoggerConfiguration()
+        Log.Logger = new LoggerConfiguration()
                      .WriteTo.InMemory()
                      .CreateLogger();
 
-        _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath, Client, Logger)!;
+        _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath, Client)!;
     }
 
     [TestMethod]
@@ -81,6 +80,6 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 
 }

@@ -1,7 +1,11 @@
 ﻿using Bogus;
+using FluentAssertions;
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Serilog;
+using Serilog.Sinks.InMemory;
+using Serilog.Sinks.InMemory.Assertions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +31,22 @@ public abstract class TestAdapter<A> where A : Adapter
     {
         //Assert
         Assert.AreEqual(RootPath, _adapter!.RootPath);
+    }
+
+    public virtual void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull()
+    {
+        //Arrange
+        Log.CloseAndFlush();
+
+        //Act
+        _adapter.Connect();
+
+        //Assert
+        InMemorySink.Instance
+            .Should()
+            .HaveMessage("{Adapter} - Connected succsefull")
+            .Appearing()
+            .Once();
     }
 
     public virtual async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException()
@@ -132,7 +152,7 @@ public abstract class TestAdapter<A> where A : Adapter
         _adapter!.WriteFile(directory + "/" + fileName, "ReadFile");
 
         //Act
-        byte[] readFiles = _adapter!.ReadFile(directory + "/" + fileName);
+        var readFiles = _adapter!.ReadFile(directory + "/" + fileName);
 
         //Act and Assert
         Assert.AreEqual(8, readFiles.Length);
@@ -158,7 +178,7 @@ public abstract class TestAdapter<A> where A : Adapter
         await _adapter!.WriteFileAsync(directory + "/" + fileName, "ReadFile");
 
         //Act
-        byte[] readFiles = await _adapter!.ReadFileAsync(directory + "/" + fileName);
+        var readFiles = await _adapter!.ReadFileAsync(directory + "/" + fileName);
 
         //Act and Assert
         Assert.AreEqual(8, readFiles.Length);

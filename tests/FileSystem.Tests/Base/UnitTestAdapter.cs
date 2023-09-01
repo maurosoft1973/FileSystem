@@ -3,6 +3,8 @@ using Maurosoft.FileSystem.Adapters;
 using System;
 using System.Threading.Tasks;
 using FileSystem.Tests.Base;
+using Serilog;
+using Serilog.Sinks.InMemory;
 
 namespace Tests.Base;
 
@@ -15,6 +17,12 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
     [TestInitialize]
     public void Init()
     {
+        Log.CloseAndFlush();
+
+        Log.Logger = new LoggerConfiguration()
+                     .WriteTo.InMemory()
+                     .CreateLogger();
+
         _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath)!;
     }
 
@@ -72,5 +80,5 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+    public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 }

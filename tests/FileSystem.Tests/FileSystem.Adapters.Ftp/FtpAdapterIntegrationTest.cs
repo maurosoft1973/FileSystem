@@ -6,9 +6,7 @@ using FluentFTP;
 using Maurosoft.FileSystem.Adapters.Ftp;
 using FileSystem.Tests.Base;
 using Serilog;
-using Serilog.Core;
 using Serilog.Sinks.InMemory;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.FileSystem.Adapters.Ftp;
 
@@ -20,11 +18,8 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
     private FtpFixture Fixture { get; }
     private FtpClient ftpClient;
 
-    private readonly ITestOutputHelper _outputHelper;
-
     public FtpAdapterIntegrationTest(ITestOutputHelper outputHelper, FtpFixture ftpFixture)
     {
-        _outputHelper = outputHelper;
         Fixture = ftpFixture;
     }
 
@@ -34,13 +29,13 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
     {
         Log.CloseAndFlush();
 
-        Logger = new LoggerConfiguration()
+        Log.Logger = new LoggerConfiguration()
                      .WriteTo.InMemory()
                      .CreateLogger();
 
         ftpClient = new FtpClient(Fixture.GetHostname(), Fixture.UserName, Fixture.Password, Fixture.GetPort());
         ftpClient.Connect();
-        _adapter = new FtpAdapter(Prefix, RootPath, ftpClient, Logger);
+        _adapter = new FtpAdapter(Prefix, RootPath, ftpClient);
         return Task.CompletedTask;
     }
 
@@ -49,6 +44,9 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
 
     [Fact(DisplayName = "FtpAdapter_Instantiation_Prefix_Should_Return_Correct")]
     public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
+
+    [Fact(DisplayName = "FtpAdapter_Connect_ClientExist_Should_ConnectedSuccsefull")]
+    public override void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull() => base.Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull();
 
     [Fact(DisplayName = "FtpAdapter_GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();

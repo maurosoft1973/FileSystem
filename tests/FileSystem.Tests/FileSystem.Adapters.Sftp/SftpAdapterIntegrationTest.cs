@@ -19,11 +19,8 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
     private SftpFixture Fixture { get; }
     private SftpClient sftpClient;
 
-    private readonly ITestOutputHelper outputHelper;
-
     public SftpAdapterIntegrationTest(ITestOutputHelper outputHelper, SftpFixture sftpFixture)
     {
-        this.outputHelper = outputHelper;
         Fixture = sftpFixture;
     }
 
@@ -33,12 +30,12 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
     {
         Log.CloseAndFlush();
 
-        Logger = new LoggerConfiguration()
+        Log.Logger = new LoggerConfiguration()
                      .WriteTo.InMemory()
                      .CreateLogger();
 
         sftpClient = new SftpClient(Fixture.GetHostname(), Fixture.GetPort(), Fixture.UserName, Fixture.Password);
-        _adapter = new SftpAdapter(Prefix, RootPath, sftpClient, Logger);
+        _adapter = new SftpAdapter(Prefix, RootPath, sftpClient);
         _adapter.Connect();
         return Task.CompletedTask;
     }
@@ -48,6 +45,9 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
 
     [Fact(DisplayName = "SftpAdapter_Instantiation_Prefix_Should_Return_Correct")]
     public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
+
+    [Fact(DisplayName = "SftpAdapter_Connect_ClientExist_Should_ConnectedSuccsefull")]
+    public override void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull() => base.Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull();
 
     [Fact(DisplayName = "SftpAdapter_GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();
