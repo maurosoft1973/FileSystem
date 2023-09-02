@@ -27,8 +27,8 @@ public class MemoryAdapterTest : UnitTestAdapter<MemoryAdapter>
     [TestMethod("MemoryAdapter_GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles")]
     public override async Task GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles() => await base.GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles();
 
-    [TestMethod("MemoryAdapter_CreateDirectoryAsync_Should_Exists")]
-    public override async Task CreateDirectoryAsync_Should_Exists() => await base.CreateDirectoryAsync_Should_Exists();
+    [TestMethod("MemoryAdapter_CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists")]
+    public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
     [TestMethod("MemoryAdapter_CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException")]
     public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();

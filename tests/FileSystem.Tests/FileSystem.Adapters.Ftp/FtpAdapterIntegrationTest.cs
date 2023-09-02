@@ -55,7 +55,7 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
     public override async Task GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles() => await base.GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles();
 
     [Fact(DisplayName = "FtpAdapter_CreateDirectoryAsync_Should_Exists")]
-    public override async Task CreateDirectoryAsync_Should_Exists() => await base.CreateDirectoryAsync_Should_Exists();
+    public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
     [Fact(DisplayName = "FtpAdapter_CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException")]
     public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();
