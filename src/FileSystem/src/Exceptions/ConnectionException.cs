@@ -4,13 +4,8 @@ namespace Maurosoft.FileSystem.Exceptions
 {
     public class ConnectionException : FileSystemException
     {
-        public ConnectionException(Exception innerException) : base(GetMessage(), innerException)
+        public ConnectionException(Exception innerException) : base("A connection exception occured. See the inner exception for more details.", innerException)
         {
-        }
-
-        private static string GetMessage()
-        {
-            return "A connection exception occured. See the inner exception for more details.";
         }
     }
 }

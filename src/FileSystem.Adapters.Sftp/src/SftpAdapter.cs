@@ -25,7 +25,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             this.client = client;
         }
 
-        public override void Dispose()
+        public override void DisposeAdapter(bool disposing)
         {
             client.Dispose();
         }
@@ -387,7 +387,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
         private string PathSftp(string path)
         {
-            if (path.StartsWith("/"))
+            if (path.Substring(0, 1) == "/")
             {
                 if (path.Length > 1)
                     return path.Substring(1);

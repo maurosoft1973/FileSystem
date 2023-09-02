@@ -5,7 +5,7 @@ namespace Maurosoft.FileSystem.Models
     public class FileModel : Model, IFile
     {
         public long? Length { get; set; }
-        public byte[] Content { get; set; }
+        public byte[]? Content { get; set; }
 
         public FileModel()
         {

@@ -23,7 +23,7 @@ namespace Maurosoft.FileSystem.Adapters.Memory
             _directories.Add(System.IO.Path.Combine(rootPath), new MemoryDirectory() { FullName = rootPath, Name = GetLastPathPart(rootPath), Root = "" });
         }
 
-        public override void Dispose()
+        public override void DisposeAdapter(bool disposing)
         {
         }
 

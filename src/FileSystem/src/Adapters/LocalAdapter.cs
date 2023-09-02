@@ -18,7 +18,7 @@ namespace Maurosoft.FileSystem.Adapters
         {
         }
 
-        public override void Dispose()
+        public override void DisposeAdapter(bool disposing)
         {
         }
 

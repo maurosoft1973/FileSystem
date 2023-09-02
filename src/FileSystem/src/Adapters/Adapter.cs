@@ -119,7 +119,20 @@ namespace Maurosoft.FileSystem.Adapters
 
         public async Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default) => await AppendFileAsync(path, Encoding.UTF8.GetBytes(contents), cancellationToken);
 
-        public abstract void Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
+            DisposeAdapter(disposing);
+        }
+
+        public abstract void DisposeAdapter(bool disposing);
+
         public abstract void Connect();
         public abstract Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default);
         public abstract Task<IDirectory> GetDirectoryAsync(string path, CancellationToken cancellationToken = default);

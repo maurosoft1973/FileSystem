@@ -2,13 +2,8 @@ namespace Maurosoft.FileSystem.Exceptions
 {
     public class NoAdaptersRegisteredException : FileSystemException
     {
-        public NoAdaptersRegisteredException() : base(GetMessage())
+        public NoAdaptersRegisteredException() : base("No adapters registered with the file system.")
         {
-        }
-
-        private static string GetMessage()
-        {
-            return "No adapters registered with the file system.";
         }
     }
 }

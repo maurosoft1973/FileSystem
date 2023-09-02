@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Maurosoft.FileSystem.Adapters;
 using Maurosoft.FileSystem.Exceptions;
-using Serilog;
 using Maurosoft.FileSystem.Adapters.Memory;
-using System.Text;
 using System;
 using System.Linq;
 
@@ -62,7 +60,6 @@ public class FileSystemTest
     public void FileSystem_GetAdapter_NoRegistred_Should_ThrowException_NoAdaptersRegisteredException()
     {
         //Arrange
-        var localAdapter1 = new LocalAdapter("prefix-1", "/");
         var fileSystem = new Maurosoft.FileSystem.FileSystem();
 
         //Act && Assert
