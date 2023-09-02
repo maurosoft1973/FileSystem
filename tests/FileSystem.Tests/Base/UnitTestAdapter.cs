@@ -92,7 +92,7 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override void ReadFile() => base.ReadFile();
+    public override void ReadFile_IfSuccess_Should_ReturnLength() => base.ReadFile_IfSuccess_Should_ReturnLength();
 
     [TestMethod]
     [TestCategory("UnitTest")]
@@ -100,7 +100,7 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+    public override async Task ReadFileAsync_IfSuccess_Should_ReturnLength() => await base.ReadFileAsync_IfSuccess_Should_ReturnLength();
 
     [TestMethod]
     [TestCategory("UnitTest")]

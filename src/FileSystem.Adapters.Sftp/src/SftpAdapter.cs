@@ -172,7 +172,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                 {
                     try
                     {
-                        directories = client.ListDirectory(path).Where(item => item.IsDirectory).Select(ModelFactory.CreateDirectory).ToList();
+                        directories = client.ListDirectory(path).Where(item => item.IsDirectory && item.Name != "." && item.Name != "..").Select(ModelFactory.CreateDirectory).ToList();
                     }
                     catch (Exception ex)
                     {

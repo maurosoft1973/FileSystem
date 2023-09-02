@@ -67,6 +67,16 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     [TestCategory("IntegrationTest")]
     public override async Task GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
 
+    [Fact(DisplayName = "GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories")]
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
+
+    [Fact(DisplayName = "GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException")]
+    [TestMethod]
+    [TestCategory("IntegrationTest")]
+    public override async Task GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
+
     [Fact(DisplayName = "CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists")]
     [TestMethod]
     [TestCategory("IntegrationTest")]
@@ -95,17 +105,17 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     [TestCategory("IntegrationTest")]
     public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
-    [Fact(DisplayName = "ReadFile")]
+    [Fact(DisplayName = "ReadFile_IfSuccess_Should_ReturnLength")]
     [TestCategory("IntegrationTest")]
-    public override void ReadFile() => base.ReadFile();
+    public override void ReadFile_IfSuccess_Should_ReturnLength() => base.ReadFile_IfSuccess_Should_ReturnLength();
 
     [Fact(DisplayName = "ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException")]
     [TestCategory("IntegrationTest")]
     public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
 
-    [Fact(DisplayName = "ReadFileAsync")]
+    [Fact(DisplayName = "ReadFileAsync_IfSuccess_Should_ReturnLength")]
     [TestCategory("IntegrationTest")]
-    public override async Task ReadFileAsync() => await base.ReadFileAsync();
+    public override async Task ReadFileAsync_IfSuccess_Should_ReturnLength() => await base.ReadFileAsync_IfSuccess_Should_ReturnLength();
 
     [Fact(DisplayName = "ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
     [TestCategory("IntegrationTest")]
