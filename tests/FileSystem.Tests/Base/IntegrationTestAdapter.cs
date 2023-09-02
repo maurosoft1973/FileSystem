@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Serilog;
 using Serilog.Sinks.InMemory;
+using Xunit;
 
 namespace FileSystem.Tests.Base;
 
@@ -26,59 +27,87 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
         _adapter = (A)Activator.CreateInstance(typeof(A), Prefix, RootPath, Client)!;
     }
 
-    [TestMethod]
+    [Fact(DisplayName = "Instantiation_Prefix_Should_Return_Correct")]
     [TestCategory("IntegrationTest")]
     public override void Instantiation_Prefix_Should_Return_Correct() => base.Instantiation_Prefix_Should_Return_Correct();
 
-    [TestMethod]
+    [Fact(DisplayName = "Instantiation_RootPath_Should_Return_Correct")]
     [TestCategory("IntegrationTest")]
     public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
 
-    [TestMethod]
+    [Fact(DisplayName = "GetFile_IfSuccess_Should_ReturnFile")]
+    [TestCategory("IntegrationTest")]
+    public override void GetFile_IfSuccess_Should_ReturnFile() => base.GetFile_IfSuccess_Should_ReturnFile();
+
+    [Fact(DisplayName = "GetFile_IfFileNotExist_Should_Throw_FileNotFoundException")]
+    [TestCategory("IntegrationTest")]
+    public override void GetFile_IfFileNotExist_Should_Throw_FileNotFoundException() => base.GetFile_IfFileNotExist_Should_Throw_FileNotFoundException();
+
+    [Fact(DisplayName = "GetFileAsync_IfSuccess_Should_ReturnFile")]
+    [TestCategory("IntegrationTest")]
+    public override async Task GetFileAsync_IfSuccess_Should_ReturnFile() => await base.GetFileAsync_IfSuccess_Should_ReturnFile();
+
+    [Fact(DisplayName = "GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException")]
     [TestCategory("IntegrationTest")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();
 
-    [TestMethod]
+    [Fact(DisplayName = "GetFiles_IfSuccess_Should_ReturnFiles")]
     [TestCategory("IntegrationTest")]
-    public override async Task GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles() => await base.GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles();
+    public override void GetFiles_IfSuccess_Should_ReturnFiles() => base.GetFiles_IfSuccess_Should_ReturnFiles();
 
+    [Fact(DisplayName = "GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException")]
+    [TestCategory("IntegrationTest")]
+    public override void GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => base.GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
+
+    [Fact(DisplayName = "GetFilesAsync_IfSuccess_Should_ReturnFiles")]
+    [TestCategory("IntegrationTest")]
+    public override async Task GetFilesAsync_IfSuccess_Should_ReturnFiles() => await base.GetFilesAsync_IfSuccess_Should_ReturnFiles();
+
+    [Fact(DisplayName = "GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException")]
+    [TestCategory("IntegrationTest")]
+    public override async Task GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
+
+    [Fact(DisplayName = "CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists")]
     [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
-    [TestMethod]
+    [Fact(DisplayName = "CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException")]
     [TestCategory("IntegrationTest")]
     public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();
 
+    [Fact(DisplayName = "DeleteFileAsync")]
     [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteFileAsync() => await base.DeleteFileAsync();
 
+    [Fact(DisplayName = "DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException")]
     [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
-    [TestMethod]
+    [Fact(DisplayName = "DeleteDirectoryAsync")]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
 
+    [Fact(DisplayName = "DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException")]
     [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
-    [TestMethod]
+    [Fact(DisplayName = "ReadFile")]
     [TestCategory("IntegrationTest")]
     public override void ReadFile() => base.ReadFile();
 
-    [TestMethod]
+    [Fact(DisplayName = "ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException")]
     [TestCategory("IntegrationTest")]
     public override void ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException() => base.ReadFile_IfFileNotExist_Should_ThrowFileNotFoundException();
 
-    [TestMethod]
+    [Fact(DisplayName = "ReadFileAsync")]
     [TestCategory("IntegrationTest")]
     public override async Task ReadFileAsync() => await base.ReadFileAsync();
 
-    [TestMethod]
+    [Fact(DisplayName = "ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
     [TestCategory("IntegrationTest")]
     public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 

@@ -36,11 +36,35 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
+    public override void GetFile_IfSuccess_Should_ReturnFile() => base.GetFile_IfSuccess_Should_ReturnFile();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override void GetFile_IfFileNotExist_Should_Throw_FileNotFoundException() => base.GetFile_IfFileNotExist_Should_Throw_FileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetFileAsync_IfSuccess_Should_ReturnFile() => await base.GetFileAsync_IfSuccess_Should_ReturnFile();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
     public override async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException();
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override async Task GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles() => await base.GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles();
+    public override void GetFiles_IfSuccess_Should_ReturnFiles() => base.GetFiles_IfSuccess_Should_ReturnFiles();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override void GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => base.GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetFilesAsync_IfSuccess_Should_ReturnFiles() => await base.GetFilesAsync_IfSuccess_Should_ReturnFiles();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
 
     [TestMethod]
     [TestCategory("UnitTest")]

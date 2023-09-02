@@ -33,7 +33,7 @@ public abstract class TestAdapter<A> where A : Adapter
         Assert.AreEqual(RootPath, _adapter!.RootPath);
     }
 
-    public virtual void Connect_ClientExist_Should_Return_Message_ConnectedSuccsefull()
+    public virtual void Connect_IfSuccess_Should_Return_Message_ConnectedSuccsefull()
     {
         //Arrange
         Log.CloseAndFlush();
@@ -49,13 +49,80 @@ public abstract class TestAdapter<A> where A : Adapter
             .Once();
     }
 
+    public virtual void GetFile_IfSuccess_Should_ReturnFile()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        _adapter!.CreateDirectory(directory);
+        _adapter!.WriteFile(directory + "/file1", System.Text.Encoding.UTF8.GetBytes("file1"));
+
+        //Act
+        var file = _adapter!.GetFile(directory + "/file1");
+
+        //Assert
+        Assert.IsNotNull(file);
+    }
+
+    public virtual void GetFile_IfFileNotExist_Should_Throw_FileNotFoundException()
+    {
+        //Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => _adapter!.GetFile("test.txt"));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(FileNotFoundException));
+    }
+
+    public virtual async Task GetFileAsync_IfSuccess_Should_ReturnFile()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        _adapter!.CreateDirectory(directory);
+        _adapter!.WriteFile(directory + "/file1", System.Text.Encoding.UTF8.GetBytes("file1"));
+
+        //Act
+        var file = await _adapter!.GetFileAsync(directory + "/file1", new System.Threading.CancellationToken());
+
+        //Assert
+        Assert.IsNotNull(file);
+    }
+
     public virtual async Task GetFileAsync_IfFileNotExist_Should_Throw_FileNotFoundException()
     {
         //Assert
         await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.GetFileAsync("test.txt"));
     }
 
-    public virtual async Task GetFilesAsync_IfWriteFileSameDirectory_Should_ReturnCorrectNumberOfFiles()
+    public virtual void GetFiles_IfSuccess_Should_ReturnFiles()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        _adapter!.CreateDirectory(directory);
+        _adapter!.WriteFile(directory + "/file1", System.Text.Encoding.UTF8.GetBytes("file1"));
+        _adapter!.WriteFile(directory + "/file2", System.Text.Encoding.UTF8.GetBytes("file2"));
+        _adapter!.WriteFile(directory + "/file3", System.Text.Encoding.UTF8.GetBytes("file3"));
+        _adapter!.WriteFile(directory + "/file4", System.Text.Encoding.UTF8.GetBytes("file4"));
+        _adapter!.WriteFile(directory + "/file5", System.Text.Encoding.UTF8.GetBytes("file5"));
+        _adapter!.WriteFile(directory + "/file1", System.Text.Encoding.UTF8.GetBytes("file1file1"), true);
+
+        //Act
+        var files = _adapter!.GetFiles(directory);
+
+        //Assert
+        Assert.AreEqual(5, files.Count());
+    }
+
+    public virtual void GetFiles_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        //Assert
+        var aggregateException = Assert.ThrowsException<AggregateException>(() => _adapter!.GetFiles(directory));
+        Assert.AreEqual(aggregateException.InnerException.GetType(), typeof(DirectoryNotFoundException));
+    }
+
+    public virtual async Task GetFilesAsync_IfSuccess_Should_ReturnFiles()
     {
         //Arrange
         var directory = faker.Database.Random.AlphaNumeric(30);
@@ -73,6 +140,15 @@ public abstract class TestAdapter<A> where A : Adapter
 
         //Assert
         Assert.AreEqual(5, files.Count());
+    }
+
+    public virtual async Task GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+
+        //Assert
+        await Assert.ThrowsExceptionAsync<DirectoryNotFoundException>(async () => await _adapter!.GetFilesAsync(directory));
     }
 
     public virtual async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists()
