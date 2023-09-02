@@ -68,17 +68,14 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     public override async Task GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetFilesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
 
     [Fact(DisplayName = "GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
 
     [Fact(DisplayName = "GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
 
     [Fact(DisplayName = "CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
@@ -87,12 +84,10 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();
 
     [Fact(DisplayName = "DeleteFileAsync")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteFileAsync() => await base.DeleteFileAsync();
 
     [Fact(DisplayName = "DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
@@ -101,7 +96,6 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
 
     [Fact(DisplayName = "DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException")]
-    [TestMethod]
     [TestCategory("IntegrationTest")]
     public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
 
@@ -120,5 +114,13 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     [Fact(DisplayName = "ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
     [TestCategory("IntegrationTest")]
     public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [Fact(DisplayName = "ReadTextFileAsync_IfSuccess_Should_ReturnLength")]
+    [TestCategory("IntegrationTest")]
+    public override async Task ReadTextFileAsync_IfSuccess_Should_ReturnLength() => await base.ReadTextFileAsync_IfSuccess_Should_ReturnLength();
+
+    [Fact(DisplayName = "ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException")]
+    [TestCategory("IntegrationTest")]
+    public override async Task ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FileSystem.Tests.Base;
 using Serilog;
 using Serilog.Sinks.InMemory;
+using Xunit;
 
 namespace Tests.Base;
 
@@ -68,6 +69,14 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
+    public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
     public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
     [TestMethod]
@@ -105,4 +114,12 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
     [TestMethod]
     [TestCategory("UnitTest")]
     public override async Task ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task ReadTextFileAsync_IfSuccess_Should_ReturnLength() => await base.ReadTextFileAsync_IfSuccess_Should_ReturnLength();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
 }

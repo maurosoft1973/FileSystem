@@ -329,4 +329,30 @@ public abstract class TestAdapter<A> where A : Adapter
         //Act and Assert
         Assert.ThrowsException<FileNotFoundException>(() => _adapter!.ReadTextFile(directory + "/" + fileName));
     }
+
+    public virtual async Task ReadTextFileAsync_IfSuccess_Should_ReturnLength()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        _adapter!.CreateDirectory(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+        _adapter!.WriteFile(directory + "/" + fileName, "ReadFile");
+
+        //Act
+        var readFile = await _adapter!.ReadTextFileAsync(directory + "/" + fileName);
+
+        //Act and Assert
+        Assert.AreEqual("ReadFile", readFile);
+    }
+
+    public virtual async Task ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException()
+    {
+        //Arrange
+        var directory = faker.Database.Random.AlphaNumeric(30);
+        _adapter!.CreateDirectory(directory);
+        var fileName = faker.Database.Random.AlphaNumeric(50);
+
+        //Act and Assert
+        await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.ReadTextFileAsync(directory + "/" + fileName));
+    }
 }
