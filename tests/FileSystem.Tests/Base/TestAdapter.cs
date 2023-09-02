@@ -75,7 +75,7 @@ public abstract class TestAdapter<A> where A : Adapter
         Assert.AreEqual(5, files.Count());
     }
 
-    public virtual async Task CreateDirectoryAsync_Should_Exists()
+    public virtual async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists()
     {
         //Arrange
         var directory = faker.Database.Random.AlphaNumeric(30);

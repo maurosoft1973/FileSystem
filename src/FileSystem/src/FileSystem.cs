@@ -62,21 +62,15 @@ namespace Maurosoft.FileSystem
         public IAdapter GetAdapter(string prefix)
         {
             if (Adapters.Count == 0)
-            {
                 throw new NoAdaptersRegisteredException();
-            }
 
             var duplicateAdapters = Adapters.GroupBy(adapter => adapter.Prefix).Where(grouping => grouping.Count() > 1).ToList();
 
             if (duplicateAdapters.Any())
-            {
                 throw new DuplicateAdapterPrefixException(duplicateAdapters, Adapters);
-            }
 
             if (Adapters.All(adapter => adapter.Prefix != prefix))
-            {
                 throw new AdapterNotFoundException(prefix, Adapters);
-            }
 
             return Adapters.First(adapter => adapter.Prefix == prefix);
         }
@@ -93,10 +87,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public IFile GetFile(string path)
-        {
-            return GetFileAsync(path).Result;
-        }
+        public IFile GetFile(string path) => GetFileAsync(path).Result;
 
         /// <summary>
         /// Return a file.
@@ -133,10 +124,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">Thrown if the directory does not exists at the given path.</exception>
-        public IDirectory GetDirectory(string path)
-        {
-            return GetDirectoryAsync(path).Result;
-        }
+        public IDirectory GetDirectory(string path) => GetDirectoryAsync(path).Result;
 
         /// <summary>
         /// Returns a directory.
@@ -173,10 +161,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">Thrown if the directory does not exists at the given path.</exception>
-        public IEnumerable<IFile> GetFiles(string path = "")
-        {
-            return GetFilesAsync(path).Result;
-        }
+        public IEnumerable<IFile> GetFiles(string path = "") => GetFilesAsync(path).Result;
 
         /// <summary>
         /// Returns files present at the provided path.
@@ -213,10 +198,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">Thrown if the directory does not exists at the given path.</exception>
-        public IEnumerable<IDirectory> GetDirectories(string path = "")
-        {
-            return GetDirectoriesAsync(path).Result;
-        }
+        public IEnumerable<IDirectory> GetDirectories(string path = "") => GetDirectoriesAsync(path).Result;
 
         /// <summary>
         /// Returns directories present at the provided path.
@@ -252,10 +234,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        public bool FileExists(string path)
-        {
-            return FileExistsAsync(path).Result;
-        }
+        public bool FileExists(string path) => FileExistsAsync(path).Result;
 
         /// <summary>
         /// Checks if a file exists at the provided path.
@@ -290,10 +269,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="DuplicateAdapterPrefixException">Thrown when multiple adapters are registered with the same prefix.</exception>
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
-        public bool DirectoryExists(string path)
-        {
-            return DirectoryExistsAsync(path).Result;
-        }
+        public bool DirectoryExists(string path) => DirectoryExistsAsync(path).Result;
 
         /// <summary>
         /// Checks if a directory exists at the provided path.
@@ -328,10 +304,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="DirectoryExistsException">Thrown if the directory exists at the given path.</exception>
-        public void CreateDirectory(string path)
-        {
-            CreateDirectoryAsync(path).Wait();
-        }
+        public void CreateDirectory(string path) => CreateDirectoryAsync(path).Wait();
 
         /// <summary>
         /// Creates a directory at the provided path.
@@ -366,10 +339,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public void DeleteFile(string path)
-        {
-            DeleteFileAsync(path).Wait();
-        }
+        public void DeleteFile(string path) => DeleteFileAsync(path).Wait();
 
         /// <summary>
         /// Deletes a file at the provided path.
@@ -404,10 +374,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">Thrown if the directory does not exists at the given path.</exception>
-        public void DeleteDirectory(string path)
-        {
-            DeleteDirectoryAsync(path).Wait();
-        }
+        public void DeleteDirectory(string path) => DeleteDirectoryAsync(path).Wait();
 
         /// <summary>
         /// Deletes a directory at the provided path.
@@ -443,10 +410,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public byte[] ReadFile(string path)
-        {
-            return ReadFileAsync(path).Result;
-        }
+        public byte[] ReadFile(string path) => ReadFileAsync(path).Result;
 
         /// <summary>
         /// Reads a file at the provided path.
@@ -483,10 +447,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public string ReadTextFile(string path)
-        {
-            return ReadTextFileAsync(path).Result;
-        }
+        public string ReadTextFile(string path) => ReadTextFileAsync(path).Result;
 
         /// <summary>
         /// Reads a text file at the provided path.
@@ -525,10 +486,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public void CopyFile(string sourcePath, string destinationPath, bool overwrite = false)
-        {
-            CopyFileAsync(sourcePath, destinationPath, overwrite).Wait();
-        }
+        public void CopyFile(string sourcePath, string destinationPath, bool overwrite = false) => CopyFileAsync(sourcePath, destinationPath, overwrite).Wait();
 
         /// <summary>
         /// Copies a file from a source path to a destination path.
@@ -580,10 +538,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public void MoveFile(string sourcePath, string destinationPath, bool overwrite = false)
-        {
-            MoveFileAsync(sourcePath, destinationPath, overwrite).Wait();
-        }
+        public void MoveFile(string sourcePath, string destinationPath, bool overwrite = false) => MoveFileAsync(sourcePath, destinationPath, overwrite).Wait();
 
         /// <summary>
         /// Moves a file from a source path to a destination path.
@@ -635,10 +590,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public void WriteFile(string path, byte[] contents, bool overwrite = false)
-        {
-            WriteFileAsync(path, contents, overwrite).Wait();
-        }
+        public void WriteFile(string path, byte[] contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
 
         /// <summary>
         /// Writes string contents to a file at the provided path.
@@ -653,10 +605,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileExistsException">Thrown if the file exists at the given path and parameter "overwrite" = false.</exception>
-        public void WriteFile(string path, string contents, bool overwrite = false)
-        {
-            WriteFileAsync(path, contents, overwrite).Wait();
-        }
+        public void WriteFile(string path, string contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
 
         /// <summary>
         /// Writes byte array contents to a file at the provided path.
@@ -718,10 +667,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public void AppendFile(string path, byte[] contents)
-        {
-            AppendFileAsync(path, contents).Wait();
-        }
+        public void AppendFile(string path, byte[] contents) => AppendFileAsync(path, contents).Wait();
 
         /// <summary>
         /// Writes string contents to a file at the provided path.
@@ -735,10 +681,7 @@ namespace Maurosoft.FileSystem
         /// <exception cref="AdapterNotFoundException">Thrown when an adapter could not be found via the provided prefix.</exception>
         /// <exception cref="PrefixNotFoundInPathException">Thrown when a prefix in the provided path could not be found.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the file does not exists at the given path.</exception>
-        public void AppendFile(string path, string contents)
-        {
-            AppendFileAsync(path, contents).Wait();
-        }
+        public void AppendFile(string path, string contents) => AppendFileAsync(path, contents).Wait();
 
         /// <summary>
         /// Writes byte array contents to a file at the provided path.
@@ -791,20 +734,14 @@ namespace Maurosoft.FileSystem
         /// </summary>
         /// <param name="path">The prefixed path.</param>
         /// <returns>The prefix.</returns>
-        private static string GetPrefix(string path)
-        {
-            return ResolvePrefixAndPath(path)[0];
-        }
+        private static string GetPrefix(string path) => ResolvePrefixAndPath(path)[0];
 
         /// <summary>
         /// Returns the path from a prefixed path.
         /// </summary>
         /// <param name="path">The prefixed path.</param>
         /// <returns>The path.</returns>
-        private static string GetPath(string path)
-        {
-            return ResolvePrefixAndPath(path)[1];
-        }
+        private static string GetPath(string path) => ResolvePrefixAndPath(path)[1];
 
         /// <summary>
         /// Resolves the prefix and path from a prefixed path.

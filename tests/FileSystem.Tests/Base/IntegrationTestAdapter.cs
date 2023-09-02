@@ -44,7 +44,7 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
 
     [TestMethod]
     [TestCategory("IntegrationTest")]
-    public override async Task CreateDirectoryAsync_Should_Exists() => await base.CreateDirectoryAsync_Should_Exists();
+    public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
 
     [TestMethod]
     [TestCategory("IntegrationTest")]

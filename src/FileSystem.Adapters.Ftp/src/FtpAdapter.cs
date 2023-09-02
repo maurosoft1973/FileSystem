@@ -34,13 +34,9 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
         {
             try
             {
-                if (client.IsConnected)
-                {
-                    Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));
-                    return;
-                }
+                if (!client.IsConnected)
+                    client.Connect();
 
-                client.Connect();
                 Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));
             }
             catch (Exception exception)
