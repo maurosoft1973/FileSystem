@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Maurosoft.FileSystem.Models;
 using Serilog;
+using Serilog.Core;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 
@@ -24,44 +25,71 @@ namespace Maurosoft.FileSystem.Adapters
             RootPath = rootPath;
         }
 
-        protected string PrependRootPath(string path) => Path.Combine(RootPath, path);
-
-        protected string[] GetPathParts(string path) => path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-
-        protected string GetLastPathPart(string path) => GetPathParts(path).Length > 0 ? GetPathParts(path).Last() : String.Empty;
-
-        protected string GetParentPathPart(string path)
-        {
-            var pathParts = GetPathParts(path);
-
-            return string.Join("/", pathParts.Take(pathParts.Length - 1));
-        }
-
-        public IFile GetFile(string path) => GetFileAsync(path).Result;
-
-        public IDirectory GetDirectory(string path) => GetDirectoryAsync(path).Result;
-
-        public IEnumerable<IFile> GetFiles(string path = "") => GetFilesAsync(path).Result;
-
-        public IEnumerable<IDirectory> GetDirectories(string path = "") => GetDirectoriesAsync(path).Result;
-
-        public bool FileExists(string path) => FileExistsAsync(path).Result;
-
-        public async Task<bool> FileExistsAsync(string path, CancellationToken cancellationToken = default)
+        public void AppendFile(string path, byte[] contents)
         {
             try
             {
-                await GetFileAsync(path, cancellationToken);
-            }
-            catch (FileNotFoundException)
-            {
-                return false;
-            }
+                var task = Task.Run(async delegate
+                {
+                    await AppendFileAsync(path, contents);
+                });
 
-            return true;
+                task.Wait();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
-        public bool DirectoryExists(string path) => DirectoryExistsAsync(path).Result;
+        public void AppendFile(string path, string contents)
+        {
+            try
+            {
+                var task = Task.Run(async delegate
+                {
+                    await AppendFileAsync(path, contents);
+                });
+
+                task.Wait();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public abstract Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default);
+
+        public async Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default) => await AppendFileAsync(path, Encoding.UTF8.GetBytes(contents), cancellationToken);
+
+        public abstract void Connect();
+
+        public void CreateDirectory(string path)
+        {
+            try
+            {
+                CreateDirectoryAsync(path).Wait(-1);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public abstract Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default);
+
+        public bool DirectoryExists(string path)
+        {
+            try
+            {
+                return DirectoryExistsAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
 
         public async Task<bool> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
         {
@@ -77,17 +105,13 @@ namespace Maurosoft.FileSystem.Adapters
             return true;
         }
 
-        public void CreateDirectory(string path) => CreateDirectoryAsync(path).Wait();
+        public abstract void Disconnect();
 
-        public void DeleteDirectory(string path) => DeleteDirectoryAsync(path).Wait();
-
-        public void DeleteFile(string path) => DeleteFileAsync(path).Wait();
-
-        public byte[] ReadFile(string path)
+        public void DeleteDirectory(string path)
         {
             try
             {
-                return ReadFileAsync(path).Result;
+                DeleteDirectoryAsync(path).Wait();
             }
             catch (Exception ex)
             {
@@ -95,11 +119,13 @@ namespace Maurosoft.FileSystem.Adapters
             }
         }
 
-        public string ReadTextFile(string path)
+        public abstract Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default);
+
+        public void DeleteFile(string path)
         {
             try
             {
-                return ReadTextFileAsync(path).Result;
+                DeleteFileAsync(path).Wait();
             }
             catch (Exception ex)
             {
@@ -107,17 +133,7 @@ namespace Maurosoft.FileSystem.Adapters
             }
         }
 
-        public void WriteFile(string path, byte[] contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
-
-        public void WriteFile(string path, string contents, bool overwrite = false) => WriteFileAsync(path, contents, overwrite).Wait();
-
-        public async Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default) => await WriteFileAsync(path, Encoding.UTF8.GetBytes(contents), overwrite, cancellationToken);
-
-        public void AppendFile(string path, byte[] contents) => AppendFileAsync(path, contents).Wait();
-
-        public void AppendFile(string path, string contents) => AppendFileAsync(path, contents).Wait();
-
-        public async Task AppendFileAsync(string path, string contents, CancellationToken cancellationToken = default) => await AppendFileAsync(path, Encoding.UTF8.GetBytes(contents), cancellationToken);
+        public abstract Task DeleteFileAsync(string path, CancellationToken cancellationToken = default);
 
         public void Dispose()
         {
@@ -133,17 +149,161 @@ namespace Maurosoft.FileSystem.Adapters
 
         public abstract void DisposeAdapter(bool disposing);
 
-        public abstract void Connect();
-        public abstract Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default);
+        public bool FileExists(string path)
+        {
+            try
+            {
+                return FileExistsAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public async Task<bool> FileExistsAsync(string path, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await GetFileAsync(path, cancellationToken);
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public IDirectory GetDirectory(string path)
+        {
+            try
+            {
+                return GetDirectoryAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
         public abstract Task<IDirectory> GetDirectoryAsync(string path, CancellationToken cancellationToken = default);
-        public abstract Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default);
+
+        public IEnumerable<IDirectory> GetDirectories(string path = "")
+        {
+            try
+            {
+                return GetDirectoriesAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
         public abstract Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default);
-        public abstract Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default);
-        public abstract Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default);
-        public abstract Task DeleteFileAsync(string path, CancellationToken cancellationToken = default);
+
+        public IFile GetFile(string path)
+        {
+            try
+            {
+                return GetFileAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public abstract Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default);
+
+        public IEnumerable<IFile> GetFiles(string path = "")
+        {
+            try
+            {
+                return GetFilesAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public abstract Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default);
+
+        public byte[] ReadFile(string path)
+        {
+            try
+            {
+                var task = Task.Run(async delegate
+                {
+                    return await ReadFileAsync(path);
+                });
+
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
+                throw ex.InnerException;
+            }
+        }
+
         public abstract Task<byte[]> ReadFileAsync(string path, CancellationToken cancellationToken = default);
+
+        public string ReadTextFile(string path)
+        {
+            try
+            {
+                return ReadTextFileAsync(path).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
         public abstract Task<string> ReadTextFileAsync(string path, CancellationToken cancellationToken = default);
+
+        public void WriteFile(string path, byte[] contents, bool overwrite = false)
+        {
+            try
+            {
+                WriteFileAsync(path, contents, overwrite).Wait();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public void WriteFile(string path, string contents, bool overwrite = false)
+        {
+            try
+            {
+                WriteFileAsync(path, contents, overwrite).Wait();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        public async Task WriteFileAsync(string path, string contents, bool overwrite = false, CancellationToken cancellationToken = default) => await WriteFileAsync(path, Encoding.UTF8.GetBytes(contents), overwrite, cancellationToken);
+
         public abstract Task WriteFileAsync(string path, byte[] contents, bool overwrite = false, CancellationToken cancellationToken = default);
-        public abstract Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default);
+
+        protected string PrependRootPath(string path) => Path.Combine(RootPath, path);
+
+        protected string[] GetPathParts(string path) => path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+        protected string GetLastPathPart(string path) => GetPathParts(path).Length > 0 ? GetPathParts(path).Last() : String.Empty;
+
+        protected string GetParentPathPart(string path)
+        {
+            var pathParts = GetPathParts(path);
+
+            return string.Join("/", pathParts.Take(pathParts.Length - 1));
+        }
     }
 }

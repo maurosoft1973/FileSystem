@@ -7,6 +7,7 @@ using Xunit;
 using System;
 using dotenv.net;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace FileSystem.Tests.FileSystem.Adapters.Ftp;
 
@@ -75,5 +76,14 @@ public class FtpFixture : IAsyncLifetime
     }
 
     ///<inheritdoc/>
-    public async Task DisposeAsync() => await FtpContainer.StopAsync().ConfigureAwait(false);
+    public async Task DisposeAsync()
+    {
+        var filename = $"proftpd_log_{DateTime.Now:yyyyMMddHHmmss}.json";
+        var jsonlog = await FtpContainer.ReadFileAsync("/var/log/proftpd/jsonlog.log");
+        File.WriteAllBytes($"{Path.Combine(AppContext.BaseDirectory, filename)}", jsonlog);
+        filename = $"proftpd_log_{DateTime.Now:yyyyMMddHHmmss}.log";
+        var res = await FtpContainer.GetLogsAsync();
+        File.WriteAllText($"{Path.Combine(AppContext.BaseDirectory, filename)}", res.Stderr);
+        await FtpContainer.StopAsync().ConfigureAwait(false);
+    }
 }

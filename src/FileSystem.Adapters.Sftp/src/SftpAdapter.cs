@@ -18,74 +18,148 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 {
     public class SftpAdapter : Adapter
     {
-        private readonly SftpClient client;
+        private readonly ISftpClient client;
 
-        public SftpAdapter(string prefix, string rootPath, SftpClient client) : base(prefix, rootPath)
+        public SftpAdapter(string prefix, string rootPath, ISftpClient client) : base(prefix, rootPath)
         {
             this.client = client;
         }
 
-        public override void DisposeAdapter(bool disposing)
+        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
         {
-            client.Dispose();
+            await GetFileAsync(path, cancellationToken);
+
+            try
+            {
+                var stringContents = Encoding.UTF8.GetString(contents, 0, contents.Length);
+
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.AppendAllText(PathSftp(PrependRootPath(path)), stringContents);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
+            }
+            catch (Exception exception)
+            {
+                throw Exception(exception);
+            }
         }
 
         public override void Connect()
         {
             try
             {
-                if (client.IsConnected)
-                {
-                    Logger?.Information("{Adapter} - Connected succsefull", nameof(SftpAdapter));
-                    return;
-                }
+                if (!client.IsConnected)
+                    client.Connect();
 
-                client.Connect();
-                Logger?.Information("{Adapter} - Connected succsefull", nameof(SftpAdapter));
+                Logger?.Information("{Adapter} - Connected successful", nameof(SftpAdapter));
             }
             catch (Exception exception)
             {
-                Logger?.Error("{Adapter} - Connect error: {ConnectErrorMessage}", nameof(SftpAdapter), exception.Message);
                 throw Exception(exception);
             }
         }
 
-        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
         {
-            path = PathSftp(PrependRootPath(path));
+            if (await DirectoryExistsAsync(path, cancellationToken))
+                throw new DirectoryExistsException(PathSftp(PrependRootPath(path)), Prefix);
 
             try
             {
                 var task = Task.Run(() =>
                 {
-                    ISftpFile? directory = null;
                     try
                     {
-                        directory = client.Get(path);
+                        client.CreateDirectory(PathSftp(PrependRootPath(path)));
                     }
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
-
-                    return directory;
                 });
 
                 await task;
-
-                if (task.Result == null || task.Result.IsDirectory)
-                    throw new FileNotFoundException(path, Prefix);
-
-                return ModelFactory.CreateFile(task.Result);
-            }
-            catch (SftpPathNotFoundException)
-            {
-                throw new FileNotFoundException(path, Prefix);
             }
             catch (Exception exception)
             {
                 throw Exception(exception);
             }
+        }
+
+        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetDirectoryAsync(path, cancellationToken);
+
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.DeleteDirectory(PathSftp(PrependRootPath(path)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
+            }
+            catch (Exception exception)
+            {
+                throw Exception(exception);
+            }
+        }
+
+        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetFileAsync(path, cancellationToken);
+
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.DeleteFile(PathSftp(PrependRootPath(path)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
+            }
+            catch (Exception exception)
+            {
+                throw Exception(exception);
+            }
+        }
+
+        public override void Disconnect()
+        {
+            client.Disconnect();
+            Logger?.Information("{Adapter} - Disconnect succsefull", nameof(SftpAdapter));
+        }
+
+        public override void DisposeAdapter(bool disposing)
+        {
+            //client.Dispose()
         }
 
         public override async Task<IDirectory> GetDirectoryAsync(string path, CancellationToken cancellationToken = default)
@@ -104,6 +178,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
 
                     return directory;
@@ -119,39 +194,6 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             catch (SftpPathNotFoundException)
             {
                 throw new DirectoryNotFoundException(path, Prefix);
-            }
-            catch (Exception exception)
-            {
-                throw Exception(exception);
-            }
-        }
-
-        public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
-        {
-            await GetDirectoryAsync(path, cancellationToken);
-            path = PathSftp(PrependRootPath(path));
-
-            try
-            {
-                var files = Enumerable.Empty<IFile>();
-
-                var task = Task.Run(() =>
-                {
-                    try
-                    {
-                        files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                    }
-
-                    return files;
-                });
-
-                await task;
-
-                return task.Result;
             }
             catch (Exception exception)
             {
@@ -177,6 +219,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
 
                     return directories;
@@ -192,26 +235,38 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
         }
 
-        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            if (await DirectoryExistsAsync(path, cancellationToken))
-                throw new DirectoryExistsException(PathSftp(PrependRootPath(path)), Prefix);
+            path = PathSftp(PrependRootPath(path));
 
             try
             {
                 var task = Task.Run(() =>
                 {
+                    ISftpFile? directory = null;
                     try
                     {
-                        client.CreateDirectory(PathSftp(PrependRootPath(path)));
+                        directory = client.Get(path);
                     }
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
+
+                    return directory;
                 });
 
                 await task;
+
+                if (task.Result == null || task.Result.IsDirectory)
+                    throw new FileNotFoundException(path, Prefix);
+
+                return ModelFactory.CreateFile(task.Result);
+            }
+            catch (SftpPathNotFoundException)
+            {
+                throw new FileNotFoundException(path, Prefix);
             }
             catch (Exception exception)
             {
@@ -219,51 +274,33 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
         }
 
-        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-
-            try
-            {
-                var task = Task.Run(() =>
-                {
-                    try
-                    {
-                        client.DeleteFile(PathSftp(PrependRootPath(path)));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                    }
-                }, cancellationToken);
-
-                await task;
-            }
-            catch (Exception exception)
-            {
-                throw Exception(exception);
-            }
-        }
-
-        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
+            path = PathSftp(PrependRootPath(path));
 
             try
             {
+                var files = Enumerable.Empty<IFile>();
+
                 var task = Task.Run(() =>
                 {
                     try
                     {
-                        client.DeleteDirectory(PathSftp(PrependRootPath(path)));
+                        files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
                     }
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
-                }, cancellationToken);
+
+                    return files;
+                });
 
                 await task;
+
+                return task.Result;
             }
             catch (Exception exception)
             {
@@ -322,6 +359,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
                     catch (Exception ex)
                     {
                         Logger?.Error(ex, ex.Message);
+                        throw;
                     }
                 }, cancellationToken);
 
@@ -333,43 +371,8 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
         }
 
-        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-
-            try
-            {
-                var stringContents = Encoding.UTF8.GetString(contents, 0, contents.Length);
-
-                var task = Task.Run(() =>
-                {
-                    try
-                    {
-                        client.AppendAllText(PathSftp(PrependRootPath(path)), stringContents);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                    }
-                }, cancellationToken);
-
-                await task;
-            }
-            catch (SshConnectionException exception)
-            {
-                throw new ConnectionException(exception);
-            }
-            catch (Exception exception)
-            {
-                throw new AdapterRuntimeException(exception);
-            }
-        }
-
         private static Exception Exception(Exception exception)
         {
-            if (exception is FileSystemException)
-                return exception;
-
             if (exception is SshConnectionException sshConnectionException)
                 return new ConnectionException(sshConnectionException);
 

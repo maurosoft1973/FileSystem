@@ -4,14 +4,9 @@ namespace Maurosoft.FileSystem.Exceptions
     {
         public string Path { get; }
 
-        public PrefixNotFoundInPathException(string path) : base(GetMessage(path))
+        public PrefixNotFoundInPathException(string path) : base($"No prefix found in path '{path}'.")
         {
             Path = path;
-        }
-
-        private static string GetMessage(string path)
-        {
-            return $"No prefix found in path '{path}'.";
         }
     }
 }

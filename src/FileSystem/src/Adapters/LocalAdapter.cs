@@ -17,28 +17,64 @@ namespace Maurosoft.FileSystem.Adapters
         {
         }
 
-        public override void DisposeAdapter(bool disposing)
+        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
         {
+            await GetFileAsync(path, cancellationToken);
+
+            using var fileStream = new FileStream(PrependRootPath(path), FileMode.Append);
+
+            await fileStream.WriteAsync(contents, 0, contents.Length, cancellationToken);
         }
 
         public override void Connect() => Logger?.Information("{Adapter} - Connected succsefull", nameof(LocalAdapter));
 
-        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
         {
-            path = PrependRootPath(path);
+            if (await DirectoryExistsAsync(path, cancellationToken))
+                throw new DirectoryExistsException(PrependRootPath(path), Prefix);
 
             try
             {
-                var file = await Task.Run(() => new FileInfo(path), cancellationToken);
-
-                if (!file.Exists)
-                    throw new FileNotFoundException(path, Prefix);
-
-                return new FileModel(file);
+                await Task.Run(() => Directory.CreateDirectory(PrependRootPath(path)), cancellationToken);
             }
-            catch (FileSystemException)
+            catch (Exception exception)
             {
-                throw;
+                throw new AdapterRuntimeException(exception);
+            }
+        }
+
+        public override void DisposeAdapter(bool disposing)
+        {
+        }
+
+        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetDirectoryAsync(path, cancellationToken);
+            await Task.Run(() => Directory.Delete(PrependRootPath(path), true), cancellationToken);
+        }
+
+        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetFileAsync(path, cancellationToken);
+            await Task.Run(() => File.Delete(PrependRootPath(path)), cancellationToken);
+        }
+
+        public override void Disconnect() => Logger?.Information("{Adapter} - Disconnect succsefull", nameof(LocalAdapter));
+
+        public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default)
+        {
+            path = PrependRootPath(path);
+            var directory = await Task.Run(() => new DirectoryInfo(path), cancellationToken);
+
+            if (!directory.Exists)
+                throw new DirectoryNotFoundException(path, Prefix);
+
+            try
+            {
+                return await Task.Run(
+                    () => directory.GetDirectories().Select(item => GetDirectory(item.FullName)).ToList(),
+                    cancellationToken
+                );
             }
             catch (Exception exception)
             {
@@ -69,6 +105,29 @@ namespace Maurosoft.FileSystem.Adapters
             }
         }
 
+        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
+        {
+            path = PrependRootPath(path);
+
+            try
+            {
+                var file = await Task.Run(() => new FileInfo(path), cancellationToken);
+
+                if (!file.Exists)
+                    throw new FileNotFoundException(path, Prefix);
+
+                return new FileModel(file);
+            }
+            catch (FileSystemException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw new AdapterRuntimeException(exception);
+            }
+        }
+
         public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             path = PrependRootPath(path);
@@ -85,54 +144,6 @@ namespace Maurosoft.FileSystem.Adapters
             {
                 throw new AdapterRuntimeException(exception);
             }
-        }
-
-        public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default)
-        {
-            path = PrependRootPath(path);
-            var directory = await Task.Run(() => new DirectoryInfo(path), cancellationToken);
-
-            if (!directory.Exists)
-                throw new DirectoryNotFoundException(path, Prefix);
-
-            try
-            {
-                return await Task.Run(
-                    () => directory.GetDirectories().Select(item => GetDirectory(item.FullName)).ToList(),
-                    cancellationToken
-                );
-            }
-            catch (Exception exception)
-            {
-                throw new AdapterRuntimeException(exception);
-            }
-        }
-
-        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
-        {
-            if (await DirectoryExistsAsync(path, cancellationToken))
-                throw new DirectoryExistsException(PrependRootPath(path), Prefix);
-
-            try
-            {
-                await Task.Run(() => Directory.CreateDirectory(PrependRootPath(path)), cancellationToken);
-            }
-            catch (Exception exception)
-            {
-                throw new AdapterRuntimeException(exception);
-            }
-        }
-
-        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-            await Task.Run(() => File.Delete(PrependRootPath(path)), cancellationToken);
-        }
-
-        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
-        {
-            await GetDirectoryAsync(path, cancellationToken);
-            await Task.Run(() => Directory.Delete(PrependRootPath(path), true), cancellationToken);
         }
 
         public override async Task<byte[]> ReadFileAsync(string path, CancellationToken cancellationToken = default)
@@ -161,15 +172,6 @@ namespace Maurosoft.FileSystem.Adapters
                 throw new FileExistsException(PrependRootPath(path), Prefix);
 
             using var fileStream = new FileStream(PrependRootPath(path), FileMode.Create);
-
-            await fileStream.WriteAsync(contents, 0, contents.Length, cancellationToken);
-        }
-
-        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-
-            using var fileStream = new FileStream(PrependRootPath(path), FileMode.Append);
 
             await fileStream.WriteAsync(contents, 0, contents.Length, cancellationToken);
         }

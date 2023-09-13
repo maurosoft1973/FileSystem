@@ -29,11 +29,63 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override void Instantiation_Prefix_Should_Return_Correct() => base.Instantiation_Prefix_Should_Return_Correct();
+    public override async Task AppendFileAsync_ContentByte_IfSuccess_Should_ReturnStringAppend() => await base.AppendFileAsync_ContentByte_IfSuccess_Should_ReturnStringAppend();
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
+    public override async Task AppendFileAsync_ContentByte_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.AppendFileAsync_ContentByte_IfFileNotExist_Should_Throw_FileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task AppendFileAsync_ContentByte_IfConnectionClose_Should_Throw_ConnectionException() => await base.AppendFileAsync_ContentByte_IfConnectionClose_Should_Throw_ConnectionException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task AppendFileAsync_ContentString_IfSuccess_Should_ReturnStringAppend() => await base.AppendFileAsync_ContentString_IfSuccess_Should_ReturnStringAppend();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task AppendFileAsync_ContentString_IfFileNotExist_Should_Throw_FileNotFoundException() => await base.AppendFileAsync_ContentString_IfFileNotExist_Should_Throw_FileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task AppendFileAsync_ContentString_IfConnectionClose_Should_Throw_ConnectionException() => await base.AppendFileAsync_ContentString_IfConnectionClose_Should_Throw_ConnectionException();
+
+    [Fact]
+    [TestCategory("UnitTest")]
+    public override void Connect_IfSuccess_Should_Return_Message_ConnectedSuccessful() => base.Connect_IfSuccess_Should_Return_Message_ConnectedSuccessful();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteFileAsync_IfSuccess_Should_Return_FileNotExists() => await base.DeleteFileAsync_IfSuccess_Should_Return_FileNotExists();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
+
+    [TestMethod]
+    [TestCategory("UnitTest")]
+    public override async Task GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
 
     [TestMethod]
     [TestCategory("UnitTest")]
@@ -69,35 +121,11 @@ public abstract class UnitTestAdapter<A> : TestAdapter<A> where A : Adapter
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
+    public override void Instantiation_Prefix_Should_Return_Correct() => base.Instantiation_Prefix_Should_Return_Correct();
 
     [TestMethod]
     [TestCategory("UnitTest")]
-    public override async Task GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException() => await base.GetDirectoriesAsync_IfDirectoryNotExist_Should_Throw_DirectoryNotFoundException();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists() => await base.CreateDirectoryAsync_IfSuccess_Should_ReturnDirectoryExists();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException() => await base.CreateDirectoryAsync_IfExists_Should_ThrowDirectoryExistsException();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task DeleteFileAsync() => await base.DeleteFileAsync();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteFileAsync_IfNotExists_Should_ThrowFileNotFoundException();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task DeleteDirectoryAsync() => await base.DeleteDirectoryAsync();
-
-    [TestMethod]
-    [TestCategory("UnitTest")]
-    public override async Task DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException() => await base.DeleteDirectoryAsync_IfNotExists_Should_ThrowFileNotFoundException();
+    public override void Instantiation_RootPath_Should_Return_Correct() => base.Instantiation_RootPath_Should_Return_Correct();
 
     [TestMethod]
     [TestCategory("UnitTest")]

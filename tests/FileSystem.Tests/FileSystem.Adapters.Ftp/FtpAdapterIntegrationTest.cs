@@ -7,8 +7,12 @@ using Maurosoft.FileSystem.Adapters.Ftp;
 using FileSystem.Tests.Base;
 using Serilog;
 using Serilog.Sinks.InMemory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+
 namespace Tests.FileSystem.Adapters.Ftp;
 
+[TestClass]
 public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpClient>, IClassFixture<FtpFixture>, IAsyncLifetime
 {
     public override string Prefix => "ftpadapter1";
@@ -29,6 +33,7 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
         Log.CloseAndFlush();
 
         Log.Logger = new LoggerConfiguration()
+                     .WriteTo.File("serilog.log")
                      .WriteTo.InMemory()
                      .CreateLogger();
 

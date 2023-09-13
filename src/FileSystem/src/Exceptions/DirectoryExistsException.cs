@@ -5,15 +5,10 @@ namespace Maurosoft.FileSystem.Exceptions
         public string Path { get; }
         public string Prefix { get; }
 
-        public DirectoryExistsException(string path, string prefix) : base(GetMessage(path, prefix))
+        public DirectoryExistsException(string path, string prefix) : base($"Directory at path '{path}' already exists in adapter with prefix '{prefix}'.")
         {
             Path = path;
             Prefix = prefix;
-        }
-
-        private static string GetMessage(string path, string prefix)
-        {
-            return $"Directory at path '{path}' already exists in adapter with prefix '{prefix}'.";
         }
     }
 }

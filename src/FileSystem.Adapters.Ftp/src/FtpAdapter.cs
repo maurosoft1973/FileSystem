@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Renci.SshNet.Common;
 using Maurosoft.FileSystem.Exceptions;
 using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 using FluentFTP;
-using Serilog;
+using FluentFTP.Exceptions;
+using Polly;
 
 namespace Maurosoft.FileSystem.Adapters.Ftp
 {
@@ -25,9 +24,34 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             this.client = client;
         }
 
-        public override void DisposeAdapter(bool disposing)
+        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
         {
-            client.Dispose();
+            await GetFileAsync(path, cancellationToken);
+
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        var file = client.OpenAppend(PrependRootPath(path));
+                        file.Write(contents, 0, contents.Length);
+                        file.Flush();
+                        file.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
+            }
+            catch (Exception exception)
+            {
+                throw Exception(exception);
+            }
         }
 
         public override void Connect()
@@ -37,7 +61,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
                 if (!client.IsConnected)
                     client.Connect();
 
-                Logger?.Information("{Adapter} - Connected succsefull", nameof(FtpAdapter));
+                Logger?.Information("{Adapter} - Connected successful", nameof(FtpAdapter));
             }
             catch (Exception exception)
             {
@@ -46,22 +70,92 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
         }
 
-        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
         {
-            path = PrependRootPath(path);
+            if (await DirectoryExistsAsync(path, cancellationToken))
+                throw new DirectoryExistsException(PrependRootPath(path), Prefix);
 
             try
             {
-                var file = await Task.Run(() => client.GetObjectInfo(path), cancellationToken);
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.CreateDirectory(PrependRootPath(path), true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
 
-                if (file == null || file.Type == FtpObjectType.Directory)
-                    throw new FileNotFoundException(path, Prefix);
-
-                return ModelFactory.CreateFile(file);
+                await task;
             }
-            catch (SftpPathNotFoundException)
+            catch (Exception exception)
             {
-                throw new FileNotFoundException(path, Prefix);
+                throw Exception(exception);
+            }
+        }
+
+        public override void Disconnect()
+        {
+            client.Disconnect();
+            Logger?.Information("{Adapter} - Disconnect succsefull", nameof(FtpAdapter));
+        }
+
+        public override void DisposeAdapter(bool disposing)
+        {
+            client.Dispose();
+        }
+
+        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetDirectoryAsync(path, cancellationToken);
+
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.DeleteDirectory(PrependRootPath(path));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
+            }
+            catch (Exception exception)
+            {
+                throw Exception(exception);
+            }
+        }
+
+        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
+        {
+            await GetFileAsync(path, cancellationToken);
+
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.DeleteFile(PrependRootPath(path));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                }, cancellationToken);
+
+                await task;
             }
             catch (Exception exception)
             {
@@ -75,34 +169,31 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
             try
             {
-                var directory = await Task.Run(() => client.GetObjectInfo(path), cancellationToken);
+                if (!client.IsConnected)
+                    throw new FtpAuthenticationException("999", "Client is not Connected to Server");
 
-                if (directory == null || directory.Type != FtpObjectType.Directory)
+                var task = Task.Run(() =>
+                {
+                    FtpListItem? directory = null;
+                    try
+                    {
+                        directory = client.GetObjectInfo(path);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+
+                    return directory;
+                });
+
+                await task;
+
+                if (task.Result == null || task.Result.Type != FtpObjectType.Directory)
                     throw new DirectoryNotFoundException(path, Prefix);
 
-                return ModelFactory.CreateDirectory(directory);
-            }
-            catch (SftpPathNotFoundException)
-            {
-                throw new DirectoryNotFoundException(path, Prefix);
-            }
-            catch (Exception exception)
-            {
-                throw Exception(exception);
-            }
-        }
-
-        public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
-        {
-            await GetDirectoryAsync(path, cancellationToken);
-            path = PrependRootPath(path);
-
-            try
-            {
-                return await Task.Run(
-                    () => client.GetListing(path).Where(item => item.Type != FtpObjectType.Directory).Select(ModelFactory.CreateFile).ToList(),
-                    cancellationToken
-                );
+                return ModelFactory.CreateDirectory(task.Result);
             }
             catch (Exception exception)
             {
@@ -128,14 +219,34 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
         }
 
-        public override async Task CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task<IFile> GetFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            if (await DirectoryExistsAsync(path, cancellationToken))
-                throw new DirectoryExistsException(PrependRootPath(path), Prefix);
+            path = PrependRootPath(path);
 
             try
             {
-                await Task.Run(() => client.CreateDirectory(PrependRootPath(path), true), cancellationToken);
+                await Task.Delay(1);
+
+                if (!client.IsConnected)
+                    throw new FtpAuthenticationException("999", "Client is not Connected to Server");
+
+                FtpListItem? file = null;
+
+                var retry = 0;
+                var policy = Policy
+                    .HandleResult<FtpListItem>((file) => file == null)
+                    .WaitAndRetry(3, i => TimeSpan.FromMilliseconds(10),
+                    onRetry: (exception, sleepDuration, attemptNumber, context) =>
+                    {
+                        retry++;
+                    });
+
+                file = policy.Execute(() => client.GetObjectInfo(path));
+
+                if (file == null || file.Type == FtpObjectType.Directory)
+                    throw new FileNotFoundException(path, Prefix);
+
+                return ModelFactory.CreateFile(file);
             }
             catch (Exception exception)
             {
@@ -143,27 +254,32 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
         }
 
-        public override async Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-
-            try
-            {
-                await Task.Run(() => client.DeleteFile(PrependRootPath(path)), cancellationToken);
-            }
-            catch (Exception exception)
-            {
-                throw Exception(exception);
-            }
-        }
-
-        public override async Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken = default)
+        public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
+            path = PrependRootPath(path);
 
             try
             {
-                await Task.Run(() => client.DeleteDirectory(PrependRootPath(path)), cancellationToken);
+                var task = Task.Run(() =>
+                {
+                    IEnumerable<IFile>? file = null;
+                    try
+                    {
+                        file = client.GetListing(path).Where(item => item.Type != FtpObjectType.Directory).Select(ModelFactory.CreateFile).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+
+                    return file;
+                });
+
+                await task;
+
+                return task.Result;
             }
             catch (Exception exception)
             {
@@ -177,12 +293,23 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
             try
             {
-                using var fileStream = client.OpenRead(PrependRootPath(path));
-                var fileContents = new byte[fileStream.Length];
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        using var fileStream = client.OpenRead(PrependRootPath(path));
+                        var fileContents = new byte[fileStream.Length];
+                        fileStream.Read(fileContents, 0, (int)fileStream.Length);
+                        return fileContents;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                });
 
-                await fileStream.ReadAsync(fileContents, 0, (int)fileStream.Length, cancellationToken);
-
-                return fileContents;
+                return await task;
             }
             catch (Exception exception)
             {
@@ -213,7 +340,20 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
             try
             {
-                await Task.Run(() => client.UploadBytes(contents, PrependRootPath(path)), cancellationToken);
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        client.UploadBytes(contents, PrependRootPath(path));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, ex.Message);
+                        throw;
+                    }
+                });
+
+                await task;
             }
             catch (Exception exception)
             {
@@ -221,44 +361,30 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
         }
 
-        public override async Task AppendFileAsync(string path, byte[] contents, CancellationToken cancellationToken = default)
-        {
-            await GetFileAsync(path, cancellationToken);
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    var file = client.OpenWrite(PrependRootPath(path));
-                    file.Write(contents, 0, contents.Length);
-                    file.Flush();
-                }, cancellationToken);
-            }
-            catch (SshConnectionException exception)
-            {
-                throw new ConnectionException(exception);
-            }
-            catch (Exception exception)
-            {
-                throw new AdapterRuntimeException(exception);
-            }
-        }
-
         private static Exception Exception(Exception exception)
         {
-            if (exception is FileSystemException)
+            if (exception is DirectoryExistsException)
                 return exception;
 
-            if (exception is SshConnectionException sshConnectionException)
+            if (exception is DirectoryNotFoundException)
+                return exception;
+
+            if (exception is FileExistsException)
+                return exception;
+
+            if (exception is FileNotFoundException)
+                return exception;
+
+            if (exception is FtpAuthenticationException sshConnectionException)
                 return new ConnectionException(sshConnectionException);
 
             if (exception is SocketException socketException)
                 return new ConnectionException(socketException);
 
-            if (exception is SshAuthenticationException sshAuthenticationException)
+            if (exception is FtpAuthenticationException sshAuthenticationException)
                 return new ConnectionException(sshAuthenticationException);
 
-            if (exception is ProxyException proxyException)
+            if (exception is FtpSecurityNotAvailableException proxyException)
                 return new ConnectionException(proxyException);
 
             return new AdapterRuntimeException(exception);
