@@ -39,10 +39,8 @@ public class FtpFixture : IAsyncLifetime
         if (Environment.GetEnvironmentVariable("DOCKER_HOST") == null)
             Environment.SetEnvironmentVariable("DOCKER_HOST", "unix:///var/run/docker.sock");
 
-        userName = faker.Internet.UserName();
+        userName = faker.Random.String2(10, 15);
         password = faker.Internet.Password();
-
-        userName = Regex.Replace(userName, @"[^a-zA-Z0-9_]+", "");
 
         var passivePortEnd = PassivePortStart + (MaxUsersCount);
 

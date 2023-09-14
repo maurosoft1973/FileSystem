@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Maurosoft.FileSystem.Models;
 using Serilog;
-using Serilog.Core;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
 
@@ -297,7 +296,15 @@ namespace Maurosoft.FileSystem.Adapters
 
         protected string[] GetPathParts(string path) => path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-        protected string GetLastPathPart(string path) => GetPathParts(path).Length > 0 ? GetPathParts(path).Last() : String.Empty;
+        protected string GetLastPathPart(string path)
+        {
+            var pathParts = GetPathParts(path);
+
+            if (pathParts.Length > 0)
+                return pathParts[pathParts.Length - 1];
+            else
+                return String.Empty;
+        }
 
         protected string GetParentPathPart(string path)
         {
