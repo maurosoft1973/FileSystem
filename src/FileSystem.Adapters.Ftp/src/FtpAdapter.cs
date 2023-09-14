@@ -375,17 +375,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             if (exception is FileNotFoundException)
                 return exception;
 
-            if (exception is FtpAuthenticationException sshConnectionException)
-                return new ConnectionException(sshConnectionException);
-
             if (exception is SocketException socketException)
                 return new ConnectionException(socketException);
 
-            if (exception is FtpAuthenticationException sshAuthenticationException)
-                return new ConnectionException(sshAuthenticationException);
+            if (exception is FtpAuthenticationException ftpAuthenticationException)
+                return new ConnectionException(ftpAuthenticationException);
 
-            if (exception is FtpSecurityNotAvailableException proxyException)
-                return new ConnectionException(proxyException);
+            if (exception is FtpSecurityNotAvailableException ftpSecurityNotAvailableException)
+                return new ConnectionException(ftpSecurityNotAvailableException);
 
             return new AdapterRuntimeException(exception);
         }

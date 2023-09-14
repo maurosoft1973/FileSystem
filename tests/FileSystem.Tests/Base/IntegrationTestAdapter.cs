@@ -112,6 +112,10 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
 
     [Fact]
     [TestCategory("IntegrationTest")]
+    public override async Task GetDirectoryAsync_IfConnectionClose_Should_Throw_ConnectionException() => await base.GetDirectoryAsync_IfConnectionClose_Should_Throw_ConnectionException();
+
+    [Fact]
+    [TestCategory("IntegrationTest")]
     public override async Task GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories() => await base.GetDirectoriesAsync_IfSuccess_Should_ReturnDirectories();
 
     [Fact]
@@ -189,4 +193,13 @@ public abstract class IntegrationTestAdapter<A, C> : TestAdapter<A> where A : Ad
     [Fact]
     [TestCategory("IntegrationTest")]
     public override async Task ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException() => await base.ReadTextFileAsync_IfFileNotExist_Should_ThrowFileNotFoundException();
+
+    [Fact]
+    [TestCategory("IntegrationTest")]
+    public override void WriteFile_NoOverwrite_IfFileExist_Should_ThrowFileExistsException() => base.WriteFile_NoOverwrite_IfFileExist_Should_ThrowFileExistsException();
+
+    [Fact]
+    [TestCategory("IntegrationTest")]
+    public override void WriteFile_OverwriteTrue_IfFileExist_Should_ReturnFileOvewrite() => base.WriteFile_OverwriteTrue_IfFileExist_Should_ReturnFileOvewrite();
+
 }

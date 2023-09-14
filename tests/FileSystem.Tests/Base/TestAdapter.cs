@@ -217,6 +217,15 @@ public abstract class TestAdapter<A> where A : Adapter
         await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.DeleteFileAsync(directory + "/file1"));
     }
 
+    public virtual async Task GetDirectoryAsync_IfConnectionClose_Should_Throw_ConnectionException()
+    {
+        //Act
+        _adapter.Disconnect();
+
+        //Assert
+        await Assert.ThrowsExceptionAsync<ConnectionException>(async () => await _adapter!.GetDirectoryAsync("/"));
+    }
+
     public virtual void GetFile_IfSuccess_Should_ReturnFile()
     {
         //Arrange
@@ -443,6 +452,28 @@ public abstract class TestAdapter<A> where A : Adapter
 
         //Act and Assert
         await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await _adapter!.ReadTextFileAsync(directory + "/" + filename));
+    }
+
+    public virtual void WriteFile_NoOverwrite_IfFileExist_Should_ThrowFileExistsException()
+    {
+        //Arrange
+        var (directory, filename, _, _) = CreateFile();
+
+        //Act and Assert
+        Assert.ThrowsException<FileExistsException>(() => _adapter!.WriteFile(directory + "/" + filename, "HelloWorld"));
+    }
+
+    public virtual void WriteFile_OverwriteTrue_IfFileExist_Should_ReturnFileOvewrite()
+    {
+        //Arrange
+        var (directory, filename, _, _) = CreateFile();
+
+        //Act
+        _adapter!.WriteFile(directory + "/" + filename, "HelloNewWorld", true);
+
+        //Assert
+        var fileBytes = _adapter.ReadFile(directory + "/" + filename);
+        Assert.AreEqual("HelloNewWorld", System.Text.Encoding.ASCII.GetString(fileBytes));
     }
 
     protected (string directory, string filename, bool writefile, string content) CreateFile(bool writefile = true, string content = "HelloWorld")

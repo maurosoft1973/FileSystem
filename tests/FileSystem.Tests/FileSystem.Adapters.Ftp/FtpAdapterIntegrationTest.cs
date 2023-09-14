@@ -10,12 +10,10 @@ using Serilog.Sinks.InMemory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Moq;
-using Renci.SshNet;
 using Maurosoft.FileSystem.Exceptions;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using FluentFTP.Exceptions;
 using System.Net.Sockets;
-using Renci.SshNet.Common;
 
 namespace Tests.FileSystem.Adapters.Ftp;
 
@@ -175,6 +173,21 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
 
     [Fact]
     [TestCategory("IntegrationTest")]
+    public void Connect_IfThrowException_Should_Throw_AdapterRuntimeException()
+    {
+        //Arrange
+        _adapter.Disconnect();
+
+        Mock.Get(ftpClientMock)
+            .Setup((c) => c.Connect())
+            .Throws(new Exception("Errore"));
+
+        //Assert
+        Assert.ThrowsException<AdapterRuntimeException>(() => _adapter!.Connect());
+    }
+
+    [Fact]
+    [TestCategory("IntegrationTest")]
     public async Task CreateDirectoryAsync_IfFtpAuthenticationException_Should_Throw_ConnectionException()
     {
         //Arrange
@@ -234,12 +247,12 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
 
     [Fact]
     [TestCategory("IntegrationTest")]
-    public async Task GetDirectoryAsync_IfSocketException_Should_Throw_ConnectionException()
+    public async Task GetDirectoryAsync_IfFtpSecurityNotAvailableException_Should_Throw_ConnectionException()
     {
         //Arrange
         Mock.Get(ftpClientMock)
             .Setup((c) => c.GetObjectInfo(It.IsAny<string>(), It.IsAny<bool>()))
-            .Throws(new SocketException());
+            .Throws(new FtpSecurityNotAvailableException());
 
         //Assert
         await Assert.ThrowsExceptionAsync<ConnectionException>(async () => await _adapter!.GetDirectoryAsync("/"));
@@ -247,14 +260,14 @@ public class FtpAdapterIntegrationTest : IntegrationTestAdapter<FtpAdapter, FtpC
 
     [Fact]
     [TestCategory("IntegrationTest")]
-    public async Task GetFileAsync_IfSocketException_Should_Throw_ConnectionException()
+    public async Task GetFileAsync_IfFtpSecurityNotAvailableException_Should_Throw_ConnectionException()
     {
         //Arrange
         var (directory, filename, _, _) = CreateFile();
 
         Mock.Get(ftpClientMock)
             .Setup((c) => c.GetObjectInfo(It.IsAny<string>(), It.IsAny<bool>()))
-            .Throws(new SocketException());
+            .Throws(new FtpSecurityNotAvailableException());
 
         //Assert
         await Assert.ThrowsExceptionAsync<ConnectionException>(async () => await _adapter!.GetFileAsync(directory + "/" + filename));

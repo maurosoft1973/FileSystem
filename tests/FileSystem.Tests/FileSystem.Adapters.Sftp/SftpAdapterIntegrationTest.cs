@@ -169,6 +169,21 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
 
     [Fact]
     [TestCategory("IntegrationTest")]
+    public void Connect_IfThrowException_Should_Throw_AdapterRuntimeException()
+    {
+        //Arrange
+        _adapter.Disconnect();
+
+        Mock.Get(sftpClientMock)
+            .Setup((c) => c.Connect())
+            .Throws(new Exception("Errore"));
+
+        //Assert
+        Assert.ThrowsException<AdapterRuntimeException>(() => _adapter!.Connect());
+    }
+
+    [Fact]
+    [TestCategory("IntegrationTest")]
     public async Task DeleteDirectoryAsync_IfSshConnectionException_Should_Throw_ConnectionException()
     {
         //Arrange
