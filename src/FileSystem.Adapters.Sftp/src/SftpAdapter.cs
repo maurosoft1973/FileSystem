@@ -12,7 +12,7 @@ using Maurosoft.FileSystem.Exceptions;
 using Maurosoft.FileSystem.Models;
 using DirectoryNotFoundException = Maurosoft.FileSystem.Exceptions.DirectoryNotFoundException;
 using FileNotFoundException = Maurosoft.FileSystem.Exceptions.FileNotFoundException;
-using Renci.SshNet.Sftp;
+using System.Data.Common;
 
 namespace Maurosoft.FileSystem.Adapters.Sftp
 {
@@ -35,21 +35,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.AppendAllText(PathSftp(PrependRootPath(path)), stringContents);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.AppendAllText(PathSftp(PrependRootPath(path)), stringContents);
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -65,6 +58,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -78,21 +72,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.CreateDirectory(PathSftp(PrependRootPath(path)));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.CreateDirectory(PathSftp(PrependRootPath(path)));
                 });
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -105,21 +92,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.DeleteDirectory(PathSftp(PrependRootPath(path)));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.DeleteDirectory(PathSftp(PrependRootPath(path)));
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -132,21 +112,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.DeleteFile(PathSftp(PrependRootPath(path)));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.DeleteFile(PathSftp(PrependRootPath(path)));
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -170,18 +143,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    ISftpFile? directory = null;
-                    try
-                    {
-                        directory = client.Get(path);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return directory;
+                    return client.Get(path);
                 });
 
                 await task;
@@ -191,12 +153,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
                 return ModelFactory.CreateDirectory(task.Result);
             }
-            catch (SftpPathNotFoundException)
+            catch (SftpPathNotFoundException exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw new DirectoryNotFoundException(path, Prefix);
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -204,33 +168,21 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
         public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
-            path = PathSftp(PrependRootPath(path));
 
             try
             {
-                var directories = Enumerable.Empty<IDirectory>();
+                path = PathSftp(PrependRootPath(path));
 
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        directories = client.ListDirectory(path).Where(item => item.IsDirectory && item.Name != "." && item.Name != "..").Select(ModelFactory.CreateDirectory).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return directories;
+                    return client.ListDirectory(path).Where(item => item.IsDirectory && item.Name != "." && item.Name != "..").Select(ModelFactory.CreateDirectory).ToList();
                 });
 
-                await task;
-
-                return task.Result;
+                return await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -243,18 +195,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    ISftpFile? directory = null;
-                    try
-                    {
-                        directory = client.Get(path);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return directory;
+                    return client.Get(path);
                 });
 
                 await task;
@@ -264,12 +205,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
 
                 return ModelFactory.CreateFile(task.Result);
             }
-            catch (SftpPathNotFoundException)
+            catch (SftpPathNotFoundException exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw new FileNotFoundException(path, Prefix);
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -277,33 +220,21 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
         public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
-            path = PathSftp(PrependRootPath(path));
 
             try
             {
-                var files = Enumerable.Empty<IFile>();
+                path = PathSftp(PrependRootPath(path));
 
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        files = client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return files;
+                    return client.ListDirectory(path).Where(item => !item.IsDirectory).Select(ModelFactory.CreateFile).ToList();
                 });
 
-                await task;
-
-                return task.Result;
+                return await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -323,6 +254,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -339,6 +271,7 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -352,21 +285,14 @@ namespace Maurosoft.FileSystem.Adapters.Sftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.WriteAllBytes(PathSftp(PrependRootPath(path)), contents);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.WriteAllBytes(PathSftp(PrependRootPath(path)), contents);
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }

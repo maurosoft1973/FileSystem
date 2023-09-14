@@ -1,4 +1,3 @@
-using Renci.SshNet.Sftp;
 using Maurosoft.FileSystem.Models;
 using FluentFTP;
 

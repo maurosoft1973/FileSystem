@@ -32,24 +32,17 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        var file = client.OpenAppend(PrependRootPath(path));
-                        file.Write(contents, 0, contents.Length);
-                        file.Flush();
-                        file.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    var file = client.OpenAppend(PrependRootPath(path));
+                    file.Write(contents, 0, contents.Length);
+                    file.Flush();
+                    file.Close();
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -79,21 +72,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.CreateDirectory(PrependRootPath(path), true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.CreateDirectory(PrependRootPath(path), true);
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -117,21 +103,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.DeleteDirectory(PrependRootPath(path));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.DeleteDirectory(PrependRootPath(path));
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -144,21 +123,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.DeleteFile(PrependRootPath(path));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.DeleteFile(PrependRootPath(path));
                 }, cancellationToken);
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -174,18 +146,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 
                 var task = Task.Run(() =>
                 {
-                    FtpListItem? directory = null;
-                    try
-                    {
-                        directory = client.GetObjectInfo(path);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return directory;
+                    return client.GetObjectInfo(path);
                 });
 
                 await task;
@@ -197,6 +158,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -204,17 +166,21 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
         public override async Task<IEnumerable<IDirectory>> GetDirectoriesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
-            path = PrependRootPath(path);
 
             try
             {
-                return await Task.Run(
-                    () => client.GetListing(path).Where(item => item.Type == FtpObjectType.Directory).Select(ModelFactory.CreateDirectory).ToList(),
-                    cancellationToken
-                );
+                path = PrependRootPath(path);
+
+                var task = Task.Run(() =>
+                {
+                    return client.GetListing(path).Where(item => item.Type == FtpObjectType.Directory).Select(ModelFactory.CreateDirectory).ToList();
+                });
+
+                return await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -250,6 +216,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -257,24 +224,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
         public override async Task<IEnumerable<IFile>> GetFilesAsync(string path = "", CancellationToken cancellationToken = default)
         {
             await GetDirectoryAsync(path, cancellationToken);
-            path = PrependRootPath(path);
 
             try
             {
+                path = PrependRootPath(path);
+
                 var task = Task.Run(() =>
                 {
-                    IEnumerable<IFile>? file = null;
-                    try
-                    {
-                        file = client.GetListing(path).Where(item => item.Type != FtpObjectType.Directory).Select(ModelFactory.CreateFile).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
-
-                    return file;
+                    return client.GetListing(path).Where(item => item.Type != FtpObjectType.Directory).Select(ModelFactory.CreateFile).ToList();
                 });
 
                 await task;
@@ -283,6 +240,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -295,24 +253,17 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        using var fileStream = client.OpenRead(PrependRootPath(path));
-                        var fileContents = new byte[fileStream.Length];
-                        fileStream.Read(fileContents, 0, (int)fileStream.Length);
-                        return fileContents;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    using var fileStream = client.OpenRead(PrependRootPath(path));
+                    var fileContents = new byte[fileStream.Length];
+                    fileStream.Read(fileContents, 0, (int)fileStream.Length);
+                    return fileContents;
                 });
 
                 return await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -329,6 +280,7 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
@@ -342,21 +294,14 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
             {
                 var task = Task.Run(() =>
                 {
-                    try
-                    {
-                        client.UploadBytes(contents, PrependRootPath(path));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.Error(ex, ex.Message);
-                        throw;
-                    }
+                    client.UploadBytes(contents, PrependRootPath(path));
                 });
 
                 await task;
             }
             catch (Exception exception)
             {
+                Logger?.Error(exception, exception.Message);
                 throw Exception(exception);
             }
         }
