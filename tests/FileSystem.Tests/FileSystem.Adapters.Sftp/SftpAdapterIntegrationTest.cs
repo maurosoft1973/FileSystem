@@ -254,7 +254,6 @@ public class SftpAdapterIntegrationTest : IntegrationTestAdapter<SftpAdapter, Sf
         await Assert.ThrowsExceptionAsync<ConnectionException>(async () => await _adapter!.GetFilesAsync(directory));
     }
 
-
     [Fact]
     [TestCategory("IntegrationTest")]
     public async Task ReadFileAsync_IfSshConnectionException_Should_Throw_ConnectionException()

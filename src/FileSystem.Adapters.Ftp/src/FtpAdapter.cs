@@ -17,9 +17,9 @@ namespace Maurosoft.FileSystem.Adapters.Ftp
 {
     public class FtpAdapter : Adapter
     {
-        private readonly FtpClient client;
+        private readonly IFtpClient client;
 
-        public FtpAdapter(string prefix, string rootPath, FtpClient client) : base(prefix, rootPath)
+        public FtpAdapter(string prefix, string rootPath, IFtpClient client) : base(prefix, rootPath)
         {
             this.client = client;
         }

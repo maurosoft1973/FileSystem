@@ -69,7 +69,7 @@ namespace Maurosoft.FileSystem.Adapters
         {
             try
             {
-                CreateDirectoryAsync(path).Wait(-1);
+                CreateDirectoryAsync(path).Wait();
             }
             catch (Exception ex)
             {
