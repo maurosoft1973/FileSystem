@@ -102,6 +102,7 @@ jobs:
 
     - name: Publish on Nuget
       run: |
-        foreach($file in (Get-ChildItem "${{ env.DIRECTORY_NUGET }}" -Recurse -Include *.nupkg)) {
-            dotnet nuget push $file --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-        }
+         dotnet nuget push ${{ env.DIRECTORY_NUGET }}/${{ env.ARTIFACT_FILESYSTEM_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+         dotnet nuget push ${{ env.DIRECTORY_NUGET }}/${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+         dotnet nuget push ${{ env.DIRECTORY_NUGET }}/${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+         dotnet nuget push ${{ env.DIRECTORY_NUGET }}/${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
