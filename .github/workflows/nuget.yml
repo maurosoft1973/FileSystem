@@ -1,0 +1,100 @@
+name: Publish on NuGet
+
+on:
+  push:
+    tags:
+      - 'v*'
+    paths: [ 'src/**' ]
+
+env:
+  NET_VERSION: '7.x'
+  RELEASE_NAME: FileSystem
+  ARTIFACT_FILESYSTEM_NAME: Maurosoft.FileSystem
+  ARTIFACT_ADAPTERS_FTP_NAME: Maurosoft.FileSystem.Adapters.Ftp
+  ARTIFACT_ADAPTERS_MEMORY_NAME: Maurosoft.FileSystem.Adapters.Memory
+  ARTIFACT_ADAPTERS_SFTP_NAME: Maurosoft.FileSystem.Adapters.Sftp
+
+jobs:
+  publish:
+    name: Publish on NuGet
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+    - name: Setup .NET SDK ${{ env.NET_VERSION }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.NET_VERSION }}
+        dotnet-quality: 'ga'
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion # id to later be referenced
+      uses: gittools/actions/gitversion/execute@v0
+
+    - name: Display GitVersion outputs (step output)
+      run: |
+          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+
+    - name: Build (dotnet)
+      run: |
+          dotnet build --configuration Release
+
+    - name: Test (dotnet)
+      run: |
+          dotnet test --no-restore --verbosity normal
+
+    - name: Pack (dotnet)
+      run: |
+          dotnet pack --output nuget-packages --configuration Release -p:PackageVersion=${{ env.GITVERSION_NUGETVERSIONV2 }}
+
+    - name: Create release
+      uses: actions/create-release@v1
+      id: creatre_release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag_name: v${{ env.GITVERSION_NUGETVERSIONV2 }}
+        release_name: ${{ env.RELEASE_NAME }} ${{ env.GITVERSION_NUGETVERSIONV2 }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Nuget Package ${{ env.ARTIFACT_FILESYSTEM_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ github.token }}
+        file: nuget-packages/${{ env.ARTIFACT_FILESYSTEM_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
+        asset_name: ${{ env.ARTIFACT_FILESYSTEM_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        tag: ${{ github.ref }}
+
+    - name: Upload Nuget Package ${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ github.token }}
+        file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        tag: ${{ github.ref }}
+
+    - name: Upload Nuget Package ${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ github.token }}
+        file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        tag: ${{ github.ref }}
+
+    - name: Upload Nuget Package ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ github.token }}
+        file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        tag: ${{ github.ref }}
