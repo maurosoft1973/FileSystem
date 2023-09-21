@@ -10,6 +10,7 @@
         <Title>Maurosoft FileSystem Memory adapter</Title>
         <Description>The Maurosoft FileSystem Memory adapter.</Description>
         <PackageTags>Maurosoft;file-system;memory</PackageTags>
+        <Copyright>Mauro Cardillo</Copyright>
     </PropertyGroup>
 
     <ItemGroup>

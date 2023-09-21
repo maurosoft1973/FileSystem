@@ -10,6 +10,7 @@
         <Title>Maurosoft FileSystem</Title>
         <Description>Maurosoft FileSystem is a file system abstraction supporting multiple adapters.</Description>
         <PackageTags>Maurosoft;file-system;amazon-s3;azure-blob-storage;azure-file-storage;dropbox;microsoft-onedrive;sftp</PackageTags>
+        <Copyright>Mauro Cardillo</Copyright>
     </PropertyGroup>
 
     <ItemGroup>

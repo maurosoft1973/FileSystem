@@ -74,6 +74,19 @@ var adapters = new List<IAdapter>
 var fileSystem = new FileSystem(adapters);
 ```
 
+### FTP adapter
+```
+var ftpClient = new FtpClient("hostName", "userName", "password");
+
+var adapters = new List<IAdapter>
+{
+    new LocalAdapter("local", "/var/files"),
+    new FtpAdapter("ftpAdapter1", "/", ftpClient),
+};
+
+var fileSystem = new FileSystem(adapters);
+```
+
 ### SFTP adapter
 ```
 // SFTP connection.
@@ -115,4 +128,3 @@ await fileSystem.MoveFileAsync("sftp://Foo/Bar.txt", "local://Bar/Foo.txt");
 await fileSystem.WriteFileAsync("local://foo/bar.txt", "Bar!");
 
 ```
-

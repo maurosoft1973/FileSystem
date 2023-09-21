@@ -10,6 +10,7 @@
         <Title>Maurosoft FileSystem SFTP adapter</Title>
         <Description>The Maurosoft FileSystem SFTP adapter.</Description>
         <PackageTags>Maurosoft;file-system;sftp</PackageTags>
+        <Copyright>Mauro Cardillo</Copyright>
     </PropertyGroup>
 
     <ItemGroup>

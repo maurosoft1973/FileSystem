@@ -10,6 +10,7 @@
         <Title>Maurosoft FileSystem Ftp adapter</Title>
         <Description>The Maurosoft FileSystem Ftp adapter.</Description>
         <PackageTags>Maurosoft;file-system;ftp</PackageTags>
+        <Copyright>Mauro Cardillo</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
