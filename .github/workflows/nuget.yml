@@ -13,6 +13,7 @@ env:
   ARTIFACT_ADAPTERS_FTP_NAME: Maurosoft.FileSystem.Adapters.Ftp
   ARTIFACT_ADAPTERS_MEMORY_NAME: Maurosoft.FileSystem.Adapters.Memory
   ARTIFACT_ADAPTERS_SFTP_NAME: Maurosoft.FileSystem.Adapters.Sftp
+  DIRECTORY_NUGET: ${{github.workspace}}/nuget-packages
 
 jobs:
   publish:
@@ -54,7 +55,7 @@ jobs:
 
     - name: Pack (dotnet)
       run: |
-          dotnet pack --output nuget-packages --configuration Release -p:PackageVersion=${{ env.GITVERSION_NUGETVERSIONV2 }}
+          dotnet pack --output ${{ env.DIRECTORY_NUGET }} --configuration Release -p:PackageVersion=${{ env.GITVERSION_NUGETVERSIONV2 }}
 
     - name: Create release
       uses: actions/create-release@v1
@@ -98,3 +99,9 @@ jobs:
         file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
         asset_name: ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
         tag: ${{ github.ref }}
+
+    - name: Publish on Nuget
+      run: |
+        foreach($file in (Get-ChildItem "${{ env.DIRECTORY_NUGET }}" -Recurse -Include *.nupkg)) {
+            dotnet nuget push $file --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        }
