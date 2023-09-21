@@ -81,7 +81,7 @@ jobs:
       with:
         repo_token: ${{ github.token }}
         file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
-        asset_name: ${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_FTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
         tag: ${{ github.ref }}
 
     - name: Upload Nuget Package ${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
@@ -89,7 +89,7 @@ jobs:
       with:
         repo_token: ${{ github.token }}
         file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
-        asset_name: ${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_MEMORY_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
         tag: ${{ github.ref }}
 
     - name: Upload Nuget Package ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }} to release
@@ -97,7 +97,7 @@ jobs:
       with:
         repo_token: ${{ github.token }}
         file: nuget-packages/${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
-        asset_name: ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nuget
+        asset_name: ${{ env.ARTIFACT_ADAPTERS_SFTP_NAME }}.${{ env.GITVERSION_NUGETVERSIONV2 }}.nupkg
         tag: ${{ github.ref }}
 
     - name: Publish on Nuget
